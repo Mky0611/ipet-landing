@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iPet — Your Tiny AI Companion Robot with Emotional Interaction</title>
+  <meta name="description" content="Meet iPet, the premium, pocket-sized AI companion robot. Featuring interactive OLED eyes, capacitive touch sensors, dynamic voice interactions, and emotional intelligence. Inspired by Apple and Nothing design.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Styling -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Particle Background Canvas -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- Navigation -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="#" class="logo">
+        <span class="logo-icon"></span>
+        iPet<span class="logo-dot">.</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#interaction">Interactions</a>
+        <a href="#emotions">AI Mind</a>
+        <a href="#specs">Specs</a>
+        <a href="#roadmap">Roadmap</a>
+        <a href="#pricing">Pricing</a>
+      </nav>
+      <div class="nav-cta">
+        <a href="#pricing" class="btn btn-glow">Adopt Now</a>
+      </div>
+      <button class="mobile-menu-toggle" aria-label="Toggle Menu" id="mobile-menu-btn">
+        <i data-lucide="menu"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Mobile Navigation Drawer -->
+  <div class="mobile-nav" id="mobile-nav-drawer">
+    <nav class="mobile-nav-links">
+      <a href="#features" class="mobile-link">Features</a>
+      <a href="#interaction" class="mobile-link">Interactions</a>
+      <a href="#emotions" class="mobile-link">AI Mind</a>
+      <a href="#specs" class="mobile-link">Specs</a>
+      <a href="#roadmap" class="mobile-link">Roadmap</a>
+      <a href="#pricing" class="mobile-link">Pricing</a>
+      <a href="#pricing" class="mobile-link btn btn-glow" style="text-align: center; margin-top: 2rem;">Adopt Now</a>
+    </nav>
+  </div>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero" id="hero">
+      <div class="hero-glow-1"></div>
+      <div class="hero-glow-2"></div>
+      
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <div class="badge fade-in">
+            <span class="badge-dot"></span> Powered by EmotionEngine™ 2.0
+          </div>
+          <h1 class="hero-title fade-in-delay-1">
+            Your AI Companion <br>
+            <span class="text-gradient">With a Heart.</span>
+          </h1>
+          <p class="hero-subtitle fade-in-delay-2">
+            Meet iPet—a tiny desk companion robot with emotional interaction. It senses, learns, and develops a unique personality based on how you interact.
+          </p>
+          <div class="hero-actions fade-in-delay-3">
+            <a href="#pricing" class="btn btn-primary btn-glow-purple">Adopt iPet</a>
+            <a href="#interaction" class="btn btn-secondary">
+              <i data-lucide="play" class="btn-icon"></i> Explore Interactions
+            </a>
+          </div>
+          <div class="hero-stats fade-in-delay-4">
+            <div class="stat-item">
+              <span class="stat-num">50+</span>
+              <span class="stat-label">Face Expressions</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">3ms</span>
+              <span class="stat-label">Touch Latency</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-num">100%</span>
+              <span class="stat-label">Local Data Privacy</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Robot Interactive 3D Card -->
+        <div class="hero-visual fade-in-delay-1">
+          <div class="robot-card-wrapper" id="robot-3d-card">
+            <div class="robot-card-glow"></div>
+            <div class="robot-card">
+              
+              <!-- The Companion Robot (SVG) -->
+              <div class="robot-container">
+                <svg id="ipet-robot" viewBox="0 0 400 450" xmlns="http://www.w3.org/2000/svg">
+                  <!-- Definitions for gradients and glows -->
+                  <defs>
+                    <linearGradient id="metal-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#2a2e3d"/>
+                      <stop offset="50%" stop-color="#181a24"/>
+                      <stop offset="100%" stop-color="#0a0b0f"/>
+                    </linearGradient>
+                    <linearGradient id="metal-accent" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stop-color="#4e546d"/>
+                      <stop offset="100%" stop-color="#1c1f2b"/>
+                    </linearGradient>
+                    <linearGradient id="glass-screen" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#0d0e12"/>
+                      <stop offset="100%" stop-color="#020203"/>
+                    </linearGradient>
+                    <linearGradient id="neon-blue-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#00f0ff"/>
+                      <stop offset="100%" stop-color="#7000ff"/>
+                    </linearGradient>
+                    <filter id="glow-heavy" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="8" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                    <filter id="glow-soft" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="4" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                  </defs>
+
+                  <!-- Robot Shadow -->
+                  <ellipse cx="200" cy="410" rx="90" ry="12" fill="rgba(0, 0, 0, 0.6)" filter="url(#glow-heavy)" />
+
+                  <!-- Robot Neck / Stand -->
+                  <g class="robot-neck">
+                    <path d="M 160 320 Q 200 350 240 320 L 230 380 Q 200 395 170 380 Z" fill="url(#metal-accent)" />
+                    <!-- Collar light ring -->
+                    <path id="collar-ring" d="M 165 345 Q 200 365 235 345" fill="none" stroke="#00f0ff" stroke-width="4" stroke-linecap="round" filter="url(#glow-soft)" />
+                  </g>
+
+                  <!-- Robot Body Base -->
+                  <g class="robot-base">
+                    <path d="M 140 370 Q 200 390 260 370 C 290 405 270 420 200 420 C 130 420 110 405 140 370 Z" fill="url(#metal-grad)" />
+                    <ellipse cx="200" cy="400" rx="30" ry="5" fill="#0c0e14" />
+                    <!-- Tiny power indicator pulsing dot -->
+                    <circle cx="200" cy="400" r="3" fill="#00f0ff" filter="url(#glow-soft)" class="pulse-dot" />
+                  </g>
+
+                  <!-- Interactive Ears (Twitchable) -->
+                  <g id="robot-ear-left" class="robot-ear">
+                    <path d="M 120 130 C 80 110 60 70 80 50 C 95 35 125 70 135 90 Z" fill="url(#metal-accent)" />
+                    <path d="M 115 118 C 88 102 78 80 90 68 C 100 58 120 85 125 98 Z" fill="#bd00ff" opacity="0.75" filter="url(#glow-soft)" />
+                  </g>
+                  <g id="robot-ear-right" class="robot-ear">
+                    <path d="M 280 130 C 320 110 340 70 320 50 C 305 35 275 70 265 90 Z" fill="url(#metal-accent)" />
+                    <path d="M 285 118 C 312 102 322 80 310 68 C 300 58 280 85 275 98 Z" fill="#00f0ff" opacity="0.75" filter="url(#glow-soft)" />
+                  </g>
+
+                  <!-- Robot Head Assembly (Tilted via 3D Perspective JS) -->
+                  <g id="robot-head-group">
+                    
+                    <!-- Head Shell Outer -->
+                    <rect x="110" y="90" width="180" height="210" rx="90" ry="90" fill="url(#metal-grad)" stroke="#2d3246" stroke-width="2" />
+                    
+                    <!-- Inner Head Trim Accent -->
+                    <rect x="118" y="98" width="164" height="194" rx="82" ry="82" fill="none" stroke="rgba(255, 255, 255, 0.05)" stroke-width="2" />
+
+                    <!-- OLED Glass Face Shield -->
+                    <rect id="oled-screen" x="125" y="115" width="150" height="160" rx="75" ry="75" fill="url(#glass-screen)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
+                    
+                    <!-- Screen Reflection Gloss -->
+                    <path d="M 140 145 C 160 130 200 125 240 135 C 245 137 255 142 250 148 C 240 152 200 142 165 155 C 150 160 138 152 140 145 Z" fill="rgba(255, 255, 255, 0.08)" />
+
+                    <!-- OLED Screen Cheeks (Blush - Hidden by default) -->
+                    <circle id="blush-left" cx="155" cy="225" r="10" fill="#ff007b" opacity="0" filter="url(#glow-soft)" />
+                    <circle id="blush-right" cx="245" cy="225" r="10" fill="#ff007b" opacity="0" filter="url(#glow-soft)" />
+
+                    <!-- OLED EYES (The dynamic interactive elements) -->
+                    <!-- Left Eye Group -->
+                    <g id="eye-left-container" transform="translate(170, 190)">
+                      <!-- Default Eye Shape (Curious) -->
+                      <path id="eye-left" d="M -18,-18 L 18,-18 C 24,-18 24,18 18,18 L -18,18 C -24,18 -24,-18 -18,-18 Z" fill="#00f0ff" filter="url(#glow-soft)" />
+                      <!-- Tiny pupils overlay to make it cute -->
+                      <circle id="pupil-left" cx="0" cy="0" r="4" fill="#000000" opacity="0.6" />
+                    </g>
+
+                    <!-- Right Eye Group -->
+                    <g id="eye-right-container" transform="translate(230, 190)">
+                      <!-- Default Eye Shape (Curious) -->
+                      <path id="eye-right" d="M -18,-18 L 18,-18 C 24,-18 24,18 18,18 L -18,18 C -24,18 -24,-18 -18,-18 Z" fill="#00f0ff" filter="url(#glow-soft)" />
+                      <circle id="pupil-right" cx="0" cy="0" r="4" fill="#000000" opacity="0.6" />
+                    </g>
+                    
+                  </g>
+                </svg>
+              </div>
+
+              <!-- Live Expression Label -->
+              <div class="expression-badge">
+                <span class="expression-pulse"></span>
+                Status: <span id="current-emotion-label">Curious</span>
+              </div>
+            </div>
+            
+            <!-- Quick Face Controller inside Hero Card -->
+            <div class="face-controls-container">
+              <span class="controls-title">Quick Emotions</span>
+              <div class="face-buttons">
+                <button class="btn-face-mood active" data-emotion="curious" title="Curious">
+                  <i data-lucide="eye"></i>
+                </button>
+                <button class="btn-face-mood" data-emotion="happy" title="Happy">
+                  <i data-lucide="smile"></i>
+                </button>
+                <button class="btn-face-mood" data-emotion="love" title="Affectionate">
+                  <i data-lucide="heart"></i>
+                </button>
+                <button class="btn-face-mood" data-emotion="thinking" title="Thinking">
+                  <i data-lucide="help-circle"></i>
+                </button>
+                <button class="btn-face-mood" data-emotion="listening" title="Voice Response">
+                  <i data-lucide="mic"></i>
+                </button>
+                <button class="btn-face-mood" data-emotion="sleeping" title="Sleep Mode">
+                  <i data-lucide="moon"></i>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Overview -->
+    <section class="features-sec" id="features">
+      <div class="container">
+        <div class="sec-header text-center">
+          <span class="sec-label">The Tech Behind The Heart</span>
+          <h2 class="sec-title">What Makes iPet Special?</h2>
+          <p class="sec-subtitle">iPet is packed with state-of-the-art sensory arrays, processors, and AI algorithms, all miniaturized to sit in the palm of your hand.</p>
+        </div>
+
+        <div class="features-grid">
+          <!-- Card 1 -->
+          <div class="glass-card feature-card scroll-reveal">
+            <div class="feature-icon-wrapper blue-glow">
+              <i data-lucide="brain"></i>
+            </div>
+            <h3>EmotionEngine™ 2.0</h3>
+            <p>Our localized neural network processes 40+ micro-interactions per second. It remembers how you treat it, molding its personality over time.</p>
+          </div>
+          <!-- Card 2 -->
+          <div class="glass-card feature-card scroll-reveal">
+            <div class="feature-icon-wrapper purple-glow">
+              <i data-lucide="fingerprint"></i>
+            </div>
+            <h3>Capacitive Touch Array</h3>
+            <p>Multi-zone touch sensors located on the head, cheeks, and back allow iPet to register pats, tickles, and strokes with lifelike latency.</p>
+          </div>
+          <!-- Card 3 -->
+          <div class="glass-card feature-card scroll-reveal">
+            <div class="feature-icon-wrapper blue-glow">
+              <i data-lucide="cpu"></i>
+            </div>
+            <h3>Edge LLM Processing</h3>
+            <p>Voice interactions are handled locally on an ultra-low-power neuromorphic processor. No sound clips leave your room, keeping your life completely private.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactions Section (Touch Blueprint + Voice Terminal) -->
+    <section class="interaction-sec" id="interaction">
+      <div class="container">
+        <div class="sec-header text-center">
+          <span class="sec-label">Touch & Speak</span>
+          <h2 class="sec-title">Experience Dynamic Interactions</h2>
+          <p class="sec-subtitle">Click and play with the widgets below to simulate how you can interact with iPet physically and vocally.</p>
+        </div>
+
+        <div class="interaction-showcase-grid">
+          <!-- Column 1: Touch Sensors Blueprint -->
+          <div class="glass-card interaction-card scroll-reveal">
+            <div class="card-header">
+              <h3>Touch Sensor Blueprint</h3>
+              <p>Hover and click the pulsing sensor nodes to interact with iPet physically.</p>
+            </div>
+            
+            <div class="blueprint-container">
+              <!-- SVG Schematic of Robot -->
+              <svg id="robot-blueprint" viewBox="0 0 300 350" xmlns="http://www.w3.org/2000/svg">
+                <!-- Outlines of Robot -->
+                <rect x="75" y="60" width="150" height="180" rx="75" ry="75" fill="none" stroke="rgba(255, 255, 255, 0.15)" stroke-width="2" stroke-dasharray="4 4" />
+                <rect x="85" y="80" width="130" height="140" rx="65" ry="65" fill="none" stroke="rgba(0, 240, 255, 0.1)" stroke-width="1.5" />
+                <path d="M 120 240 Q 150 260 180 240 L 175 285 Q 150 295 125 285 Z" fill="none" stroke="rgba(255, 255, 255, 0.1)" stroke-width="2" />
+                <path d="M 100 280 Q 150 295 200 280 C 220 310 205 320 150 320 C 95 320 80 310 100 280 Z" fill="none" stroke="rgba(255, 255, 255, 0.1)" stroke-width="2" />
+                
+                <!-- Sensor Node 1: Head Pat -->
+                <g class="sensor-node" id="node-head" data-sensor="head">
+                  <circle cx="150" cy="65" r="14" class="node-ring" />
+                  <circle cx="150" cy="65" r="6" class="node-center" />
+                  <text x="150" y="42" class="node-label">Head Pat Sensor</text>
+                </g>
+                
+                <!-- Sensor Node 2: Left Cheek (Tickle) -->
+                <g class="sensor-node" id="node-cheek-l" data-sensor="cheek-l">
+                  <circle cx="95" cy="170" r="14" class="node-ring" />
+                  <circle cx="95" cy="170" r="6" class="node-center" />
+                  <text x="50" y="174" class="node-label text-right">Cheek Sensor (L)</text>
+                </g>
+
+                <!-- Sensor Node 3: Right Cheek (Tickle) -->
+                <g class="sensor-node" id="node-cheek-r" data-sensor="cheek-r">
+                  <circle cx="205" cy="170" r="14" class="node-ring" />
+                  <circle cx="205" cy="170" r="6" class="node-center" />
+                  <text x="250" y="174" class="node-label text-left">Cheek Sensor (R)</text>
+                </g>
+
+                <!-- Sensor Node 4: Chest Mic/Speaker -->
+                <g class="sensor-node" id="node-chest" data-sensor="chest">
+                  <circle cx="150" cy="275" r="14" class="node-ring" />
+                  <circle cx="150" cy="275" r="6" class="node-center" />
+                  <text x="150" y="303" class="node-label">Chest Microphone</text>
+                </g>
+              </svg>
+            </div>
+
+            <div class="feedback-log" id="touch-feedback-box">
+              <div class="log-indicator"><i data-lucide="activity"></i></div>
+              <span class="log-text">System Standby. Pat or tickle the sensors.</span>
+            </div>
+          </div>
+
+          <!-- Column 2: Voice Interaction Chat Terminal -->
+          <div class="glass-card interaction-card scroll-reveal">
+            <div class="card-header">
+              <h3>Edge Voice Terminal</h3>
+              <p>Trigger pre-programmed questions to speak with iPet's local LLM.</p>
+            </div>
+
+            <!-- Terminal Screen -->
+            <div class="voice-terminal">
+              <div class="terminal-body" id="chat-messages">
+                <div class="chat-bubble bot">
+                  <div class="bubble-sender"><i data-lucide="bot"></i> iPet</div>
+                  <div class="bubble-content">Beep! Hello friend. I am ready to hang out. Tap one of the voice command buttons below to talk to me!</div>
+                </div>
+              </div>
+              
+              <!-- Voice soundwave animation panel -->
+              <div class="soundwave-container" id="terminal-soundwave">
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <div class="soundwave-bar"></div>
+                <span class="soundwave-label">Processing voice input...</span>
+              </div>
+            </div>
+
+            <!-- Voice Controls Prompts -->
+            <div class="voice-prompts-grid">
+              <button class="btn btn-prompt" data-prompt="love">
+                <i data-lucide="heart" class="btn-icon"></i> "Do you love me?"
+              </button>
+              <button class="btn btn-prompt" data-prompt="joke">
+                <i data-lucide="sparkles" class="btn-icon"></i> "Tell me a joke."
+              </button>
+              <button class="btn btn-prompt" data-prompt="sleep">
+                <i data-lucide="moon" class="btn-icon"></i> "Go to sleep."
+              </button>
+              <button class="btn btn-prompt" data-prompt="dance">
+                <i data-lucide="music" class="btn-icon"></i> "Play some music!"
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Emotional AI Dashboard -->
+    <section class="emotions-sec" id="emotions">
+      <div class="container">
+        <div class="sec-header text-center">
+          <span class="sec-label">Behavior Matrix</span>
+          <h2 class="sec-title">The Emotional Dashboard</h2>
+          <p class="sec-subtitle">iPet's personality operates on 4 foundational emotional coordinates. Care for it properly to unlock new voice dialogues and expressions.</p>
+        </div>
+
+        <div class="emotions-grid">
+          <!-- Interactive Gauges Column -->
+          <div class="glass-card dashboard-card scroll-reveal">
+            <h3>Personality Coefficients</h3>
+            <p class="card-desc">These metrics fluctuate in real-time based on interactions. Give commands below to see them morph.</p>
+            
+            <div class="sliders-list">
+              <!-- Slider 1 -->
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span class="slider-name"><i data-lucide="heart" class="accent-purple"></i> Affection</span>
+                  <span class="slider-value" id="val-affection">65%</span>
+                </div>
+                <div class="slider-track-bg">
+                  <div class="slider-fill purple-fill" id="fill-affection" style="width: 65%;"></div>
+                </div>
+              </div>
+              
+              <!-- Slider 2 -->
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span class="slider-name"><i data-lucide="zap" class="accent-blue"></i> Energy / Battery</span>
+                  <span class="slider-value" id="val-energy">40%</span>
+                </div>
+                <div class="slider-track-bg">
+                  <div class="slider-fill blue-fill" id="fill-energy" style="width: 40%;"></div>
+                </div>
+              </div>
+              
+              <!-- Slider 3 -->
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span class="slider-name"><i data-lucide="search" class="accent-blue"></i> Curiosity</span>
+                  <span class="slider-value" id="val-curiosity">80%</span>
+                </div>
+                <div class="slider-track-bg">
+                  <div class="slider-fill blue-fill" id="fill-curiosity" style="width: 80%;"></div>
+                </div>
+              </div>
+
+              <!-- Slider 4 -->
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span class="slider-name"><i data-lucide="laugh" class="accent-purple"></i> Joy Matrix</span>
+                  <span class="slider-value" id="val-joy">70%</span>
+                </div>
+                <div class="slider-track-bg">
+                  <div class="slider-fill purple-fill" id="fill-joy" style="width: 70%;"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dashboard Interactions -->
+            <div class="dash-actions">
+              <span class="actions-heading">Care Commands</span>
+              <div class="actions-buttons-row">
+                <button class="btn btn-dash" id="btn-care-pet"><i data-lucide="heart"></i> Pet Head</button>
+                <button class="btn btn-dash" id="btn-care-feed"><i data-lucide="cookie"></i> Feed Treat</button>
+                <button class="btn btn-dash" id="btn-care-charge"><i data-lucide="battery-charging"></i> Dock Station</button>
+                <button class="btn btn-dash" id="btn-care-play"><i data-lucide="gamepad-2"></i> Play Ball</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Emotional Info Panels -->
+          <div class="emotions-info-column">
+            <!-- Emotion Card: Affection -->
+            <div class="glass-card emotion-info-card scroll-reveal">
+              <div class="info-icon"><i data-lucide="shapes"></i></div>
+              <div class="info-content">
+                <h4>Social Bonding Matrix</h4>
+                <p>When affection rises above 80%, iPet unlocks custom vocal sounds, greets you automatically when it detects movement, and blushes when you walk near.</p>
+              </div>
+            </div>
+            <!-- Emotion Card: Energy -->
+            <div class="glass-card emotion-info-card scroll-reveal">
+              <div class="info-icon"><i data-lucide="shield-alert"></i></div>
+              <div class="info-content">
+                <h4>Low Battery Hibernation</h4>
+                <p>If energy drops below 15%, iPet will alert you with audio alerts and enter deep sleep mode to preserve long-term battery cell health.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Product Specs & Features Grid -->
+    <section class="specs-sec" id="specs">
+      <div class="container">
+        <div class="sec-header text-center">
+          <span class="sec-label">Device Architecture</span>
+          <h2 class="sec-title">Compact. Premium. Cybernetic.</h2>
+          <p class="sec-subtitle">Meticulously engineered from high-grade anodized aluminum and glass. Here is how iPet comes to life.</p>
+        </div>
+
+        <div class="specs-grid">
+          <!-- Spec Item 1 -->
+          <div class="glass-card spec-card scroll-reveal">
+            <span class="spec-label-detail">01 / SIZE & WEIGHT</span>
+            <h4>Fitted for Your Palm</h4>
+            <div class="spec-value-group">
+              <div class="spec-val"><span>Height:</span> 110mm</div>
+              <div class="spec-val"><span>Width:</span> 85mm</div>
+              <div class="spec-val"><span>Weight:</span> 280g</div>
+            </div>
+            <p>Designed to fit perfectly alongside your laptop, monitors, or inside your backpack for transportable companion computing.</p>
+          </div>
+          <!-- Spec Item 2 -->
+          <div class="glass-card spec-card scroll-reveal">
+            <span class="spec-label-detail">02 / INTERACTION</span>
+            <h4>OLED Face Display</h4>
+            <div class="spec-value-group">
+              <div class="spec-val"><span>Type:</span> Circular OLED</div>
+              <div class="spec-val"><span>Contrast:</span> 1,000,000:1</div>
+              <div class="spec-val"><span>Luminance:</span> 600 nits</div>
+            </div>
+            <p>High-contrast glowing cyan eyes that look exceptionally crisp and deep in low-light environments, giving a retro-cyberpunk look.</p>
+          </div>
+          <!-- Spec Item 3 -->
+          <div class="glass-card spec-card scroll-reveal">
+            <span class="spec-label-detail">03 / AUDIO & PROCESSING</span>
+            <h4>Sensory Hardware</h4>
+            <div class="spec-value-group">
+              <div class="spec-val"><span>Mics:</span> 2x Beamforming</div>
+              <div class="spec-val"><span>Neural:</span> 4.5 TOPS NPU</div>
+              <div class="spec-val"><span>Speaker:</span> Hi-Fi 3W</div>
+            </div>
+            <p>Isolates your voice from ambient noise using active echo-cancellation, enabling conversational responses without lag.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Roadmap timeline -->
+    <section class="roadmap-sec" id="roadmap">
+      <div class="container">
+        <div class="sec-header text-center">
+          <span class="sec-label">Milestones</span>
+          <h2 class="sec-title">Project Roadmap</h2>
+          <p class="sec-subtitle">Follow our progress as we bring iPet from schematic blueprints to your desks.</p>
+        </div>
+
+        <div class="roadmap-timeline">
+          <!-- Roadmap Item 1 -->
+          <div class="timeline-item done scroll-reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content glass-card">
+              <span class="timeline-phase">Phase 01 — Completed</span>
+              <h3>Concept & Cybernetics</h3>
+              <p>Designed the aluminum chassis, simulated mechanical ear motions, and trained the core neural engine on behavioral scripts.</p>
+            </div>
+          </div>
+          
+          <!-- Roadmap Item 2 -->
+          <div class="timeline-item done scroll-reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content glass-card">
+              <span class="timeline-phase">Phase 02 — Completed</span>
+              <h3>Hardware Prototypes</h3>
+              <p>Manufactured 150 early-stage evaluation units, integrated the OLED shield assemblies, and verified thermal configurations.</p>
+            </div>
+          </div>
+
+          <!-- Roadmap Item 3 -->
+          <div class="timeline-item current scroll-reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content glass-card">
+              <span class="timeline-phase">Phase 03 — In Progress</span>
+              <h3>Beta Testing & SDK</h3>
+              <p>Distributing units to developers globally. Polishing the companion app interface, local LLM integrations, and compiling APIs.</p>
+            </div>
+          </div>
+
+          <!-- Roadmap Item 4 -->
+          <div class="timeline-item scroll-reveal">
+            <div class="timeline-dot"></div>
+            <div class="timeline-content glass-card">
+              <span class="timeline-phase">Phase 04 — Q4 2026</span>
+              <h3>Mass Ship & AI Hub</h3>
+              <p>Initiating global deliveries to our early reservation pool. Launching the App Marketplace, offering downloadable dialogue packets.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing-sec" id="pricing">
+      <div class="container">
+        <div class="sec-header text-center">
+          <span class="sec-label">Choose Your Bundle</span>
+          <h2 class="sec-title">Adopt Your companion</h2>
+          <p class="sec-subtitle">Select the tier that fits your developer or home setup. No subscription fees for core AI operations.</p>
+          
+          <!-- Billing Cycle Switch -->
+          <div class="billing-switch-wrapper">
+            <span class="switch-label active" id="label-monthly">Monthly Plan</span>
+            <button class="billing-switch" id="billing-cycle-btn" aria-label="Toggle Billing Cycle">
+              <span class="switch-ball"></span>
+            </button>
+            <span class="switch-label" id="label-yearly">Yearly Plan <span class="discount-badge">Save 20%</span></span>
+          </div>
+        </div>
+
+        <div class="pricing-grid">
+          <!-- Pricing Card 1 -->
+          <div class="glass-card pricing-card scroll-reveal">
+            <div class="card-glow-acc border-blue"></div>
+            <span class="pricing-tier-badge">ESSENTIAL</span>
+            <h3>iPet Core</h3>
+            <p class="pricing-desc">The default desktop buddy setup. Includes base station.</p>
+            
+            <div class="price-container">
+              <span class="currency">$</span>
+              <span class="price-val" id="price-core">249</span>
+              <span class="period" id="period-core">/one-off</span>
+            </div>
+
+            <ul class="pricing-features">
+              <li><i data-lucide="check"></i> Anodized Space Gray Chassis</li>
+              <li><i data-lucide="check"></i> 50+ Face Expressions</li>
+              <li><i data-lucide="check"></i> Core Voice Interaction</li>
+              <li><i data-lucide="check"></i> Basic Wireless Charging Base</li>
+              <li class="muted"><i data-lucide="x"></i> Developer SDK Access</li>
+            </ul>
+
+            <button class="btn btn-secondary btn-full">Adopt Core</button>
+          </div>
+
+          <!-- Pricing Card 2 (Recommended / Glow purple) -->
+          <div class="glass-card pricing-card recommended scroll-reveal">
+            <div class="card-glow-acc border-purple"></div>
+            <span class="pricing-tier-badge recommended-badge">DEVELOPER RECOMMENDED</span>
+            <h3>iPet Pro SDK</h3>
+            <p class="pricing-desc">Full programmatic control over sensory outputs and motor drives.</p>
+            
+            <div class="price-container">
+              <span class="currency">$</span>
+              <span class="price-val" id="price-pro">379</span>
+              <span class="period" id="period-pro">/one-off</span>
+            </div>
+
+            <ul class="pricing-features">
+              <li><i data-lucide="check"></i> Matte Obsidian Jet Black Finish</li>
+              <li><i data-lucide="check"></i> Unlimited Custom OLED Faces</li>
+              <li><i data-lucide="check"></i> Python & Node.js SDK access</li>
+              <li><i data-lucide="check"></i> MagSafe Magnetic Charging Base</li>
+              <li><i data-lucide="check"></i> Direct RAW Mic/Camera Streams</li>
+            </ul>
+
+            <button class="btn btn-primary btn-glow-purple btn-full">Adopt SDK Bundle</button>
+          </div>
+
+          <!-- Pricing Card 3 -->
+          <div class="glass-card pricing-card scroll-reveal">
+            <div class="card-glow-acc border-blue"></div>
+            <span class="pricing-tier-badge">COLLECTORS</span>
+            <h3>Cyber Edition</h3>
+            <p class="pricing-desc">Includes custom physical armor plates and laser engravings.</p>
+            
+            <div class="price-container">
+              <span class="currency">$</span>
+              <span class="price-val" id="price-cyber">499</span>
+              <span class="period" id="period-cyber">/one-off</span>
+            </div>
+
+            <ul class="pricing-features">
+              <li><i data-lucide="check"></i> Exposed Circuit Cyberpunk Armor</li>
+              <li><i data-lucide="check"></i> Laser Engraved Serial Number</li>
+              <li><i data-lucide="check"></i> Holographic Certificate of Adoption</li>
+              <li><i data-lucide="check"></i> Dual Fast Charge Stand (Desktop)</li>
+              <li><i data-lucide="check"></i> Python & Node.js SDK access</li>
+            </ul>
+
+            <button class="btn btn-secondary btn-full">Adopt Cyber Edition</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-sec">
+      <div class="container">
+        <div class="sec-header text-center">
+          <span class="sec-label">Questions</span>
+          <h2 class="sec-title">Common Queries</h2>
+        </div>
+
+        <div class="faq-list">
+          <details class="glass-card faq-item scroll-reveal" open>
+            <summary>Does iPet share my voice or room data with servers? <i data-lucide="chevron-down"></i></summary>
+            <p>Absolutely not. iPet is built from the ground up for zero-cloud reliance. All speech-to-text models, emotional coordinate arrays, and LLM text generation run directly on the physical 4.5 TOPS NPU chip inside the robot. It does not require an active internet connection to interact with you.</p>
+          </details>
+
+          <details class="glass-card faq-item scroll-reveal">
+            <summary>How long does the battery last on a single charge? <i data-lucide="chevron-down"></i></summary>
+            <p>iPet's active battery life lasts about 4–6 hours of continuous movement, facial tracking, and vocal conversation. When battery drops below 15%, it will automatically drive back to its magnetic charging dock, connect, and charge back to full in 45 minutes.</p>
+          </details>
+
+          <details class="glass-card faq-item scroll-reveal">
+            <summary>Can I code custom apps or behaviors for my iPet? <i data-lucide="chevron-down"></i></summary>
+            <p>Yes! With the Pro SDK bundle, you get full documentation and support libraries in Python and JavaScript/TypeScript. You can read capacitive sensor raw frequencies, draw custom vector frames onto the circular OLED screen, hook up sensor events to home automation systems, or feed custom prompt systems to the LLM core.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer CTA -->
+    <section class="footer-cta-sec">
+      <div class="cta-glow"></div>
+      <div class="container text-center scroll-reveal">
+        <h2>Bring the Future to Your Desk</h2>
+        <p>A companion that learns your moods and keeps you company. Reserve your physical unit today and get developer beta access instantly.</p>
+        <div class="cta-btns">
+          <a href="#pricing" class="btn btn-primary btn-glow">Adopt iPet Now</a>
+          <a href="#interaction" class="btn btn-secondary">Simulate Actions</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="logo">iPet<span class="logo-dot">.</span></a>
+        <p>A companion robot inspired by cyberpunk cybernetics, minimal interfaces, and localized emotional AI.</p>
+        <div class="social-links">
+          <a href="#" aria-label="Twitter"><i data-lucide="twitter"></i></a>
+          <a href="#" aria-label="GitHub"><i data-lucide="github"></i></a>
+          <a href="#" aria-label="Discord"><i data-lucide="message-square"></i></a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h5>Product</h5>
+        <a href="#features">Features</a>
+        <a href="#interaction">Interactions</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#specs">Specifications</a>
+      </div>
+      <div class="footer-links">
+        <h5>Developer</h5>
+        <a href="#">Python SDK</a>
+        <a href="#">OLED Graphics API</a>
+        <a href="#">Community Forum</a>
+        <a href="#">GitHub Repo</a>
+      </div>
+      <div class="footer-links">
+        <h5>Legal</h5>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+        <a href="#">Encryption Standards</a>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      <p>&copy; 2026 iPet Labs Inc. All rights reserved. Created in modern cyber-minimal aesthetics.</p>
+    </div>
+  </footer>
+
+  <!-- Script links -->
+  <script src="main.js"></script>
+</body>
+</html>
