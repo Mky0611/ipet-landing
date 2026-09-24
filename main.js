@@ -125,58 +125,24 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- 2D PERSPECTIVE COMPANION CARD TILT ---
-  const robot3dCard = document.getElementById('robot-3d-card');
-  const cardGlow = robot3dCard?.querySelector('.robot-card-glow');
-  const cardOuter = robot3dCard?.querySelector('.robot-card');
-  const robotHead = document.getElementById('robot-head-group');
-
-  if (robot3dCard && cardOuter && !prefersReducedMotion) {
-    robot3dCard.addEventListener('mousemove', (e) => {
-      const rect = robot3dCard.getBoundingClientRect();
+  const carHeroCard = document.getElementById('car-hero-card') || document.querySelector('.car-hero-card');
+  if (carHeroCard && !prefersReducedMotion) {
+    carHeroCard.addEventListener('mousemove', (e) => {
+      const rect = carHeroCard.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
-      
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-
-      const rotateY = ((x - centerX) / centerX) * 10;
-      const rotateX = -((y - centerY) / centerY) * 10;
-
-      cardOuter.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-      
-      if (cardGlow) {
-        const glowX = -((x - centerX) / centerX) * 15;
-        const glowY = -((y - centerY) / centerY) * 15;
-        cardGlow.style.transform = `translate(${glowX}px, ${glowY}px)`;
-        cardGlow.style.opacity = '0.15';
-      }
-
-      if (robotHead) {
-        const headX = ((x - centerX) / centerX) * 10;
-        const headY = ((y - centerY) / centerY) * 8;
-        robotHead.style.transform = `translate(${headX}px, ${headY}px)`;
-      }
+      const rotateY = ((x - centerX) / centerX) * 4;
+      const rotateX = -((y - centerY) / centerY) * 4;
+      carHeroCard.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
     });
 
-    robot3dCard.addEventListener('mouseleave', () => {
-      cardOuter.style.transition = 'transform 0.5s ease';
-      cardOuter.style.transform = 'rotateX(0deg) rotateY(0deg)';
-      
-      if (cardGlow) {
-        cardGlow.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
-        cardGlow.style.transform = 'translate(0, 0)';
-        cardGlow.style.opacity = '0.1';
-      }
-
-      if (robotHead) {
-        robotHead.style.transition = 'transform 0.5s ease';
-        robotHead.style.transform = 'translate(0, 0)';
-      }
-
+    carHeroCard.addEventListener('mouseleave', () => {
+      carHeroCard.style.transition = 'transform 0.5s ease';
+      carHeroCard.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
       setTimeout(() => {
-        cardOuter.style.transition = 'none';
-        if (cardGlow) cardGlow.style.transition = 'none';
-        if (robotHead) robotHead.style.transition = 'none';
+        carHeroCard.style.transition = '';
       }, 500);
     });
   }

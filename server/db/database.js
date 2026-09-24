@@ -79,6 +79,17 @@ function initSchema(db) {
       created_at TEXT NOT NULL
     );
 
+    CREATE TABLE IF NOT EXISTS surveys (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      customer_name TEXT,
+      phone_or_email TEXT,
+      feature_wish TEXT,
+      use_case TEXT,
+      target_price TEXT,
+      suggestions TEXT,
+      created_at TEXT NOT NULL
+    );
+
     CREATE TABLE IF NOT EXISTS admin_users (
       username TEXT PRIMARY KEY,
       password_hash TEXT NOT NULL,

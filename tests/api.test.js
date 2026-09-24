@@ -131,3 +131,23 @@ test('API Integration: GET /api/reviews returns approved reviews', async () => {
   assert.ok(data.data.reviews.length >= 3);
   assert.strictEqual(typeof data.data.averageRating, 'number');
 });
+
+test('API Integration: POST /api/survey records customer feedback', async () => {
+  const res = await fetch(`${baseUrl}/api/survey`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      customerName: 'Hoàng Anh',
+      phoneOrEmail: 'hoanganh@gmail.com',
+      featureWish: 'Camera AI nhận diện khuôn mặt',
+      useCase: 'Trang trí bàn làm việc',
+      targetPrice: '1.500.000đ',
+      suggestions: 'Rất thích thiết kế dáng xe rover!'
+    })
+  });
+  assert.strictEqual(res.status, 200);
+  const data = await res.json();
+  assert.strictEqual(data.success, true);
+  assert.ok(data.message.includes('Cảm ơn'));
+});
+

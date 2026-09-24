@@ -396,4 +396,38 @@ router.post('/reviews', (req, res) => {
   }
 });
 
+/**
+ * POST /api/survey
+ * Receive customer survey & feature suggestion
+ */
+router.post('/survey', (req, res) => {
+  try {
+    const { customerName, phoneOrEmail, featureWish, useCase, targetPrice, suggestions } = req.body;
+    const now = new Date().toISOString();
+    const db = getDb();
+
+    const stmt = db.prepare(`
+      INSERT INTO surveys (customer_name, phone_or_email, feature_wish, use_case, target_price, suggestions, created_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `);
+
+    stmt.run(
+      (customerName || 'Ẩn danh').trim().slice(0, 80),
+      (phoneOrEmail || '').trim().slice(0, 100),
+      (featureWish || '').slice(0, 200),
+      (useCase || '').slice(0, 200),
+      (targetPrice || '').slice(0, 50),
+      (suggestions || '').trim().slice(0, 2000),
+      now
+    );
+
+    res.json({
+      success: true,
+      message: 'Cảm ơn bạn đã tham gia khảo sát & đóng góp ý kiến phát triển iPet!'
+    });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 module.exports = router;

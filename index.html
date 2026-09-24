@@ -1,33 +1,35 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>iPet — Robot AI Để Bàn Có Cảm Xúc Thật | Single Product D2C</title>
-  <meta name="description" content="iPet là robot thú cưng thông minh để bàn tích hợp vi xử lý ESP32-S3, màn hình LCD màu hiển thị đôi mắt cảm xúc, cảm biến chạm điện dung, bánh xe Mecanum drift 360° và AI cục bộ bảo mật 100%.">
-  <meta name="keywords" content="iPet, robot AI, robot de ban, robot thu cung, ESP32, mecanum wheel, smart pet">
+  <title>iPet — Robot AI Để Bàn Dáng Xe Đua | Single Product D2C</title>
+  <meta name="description" content="iPet là robot thú cưng để bàn dáng xe thể thao tích hợp ESP32-S3, màn hình LCD màu thể hiện 7 bộ cảm xúc chân thực, cảm biến chạm điện dung, bánh xe Mecanum drift 360° và Edge AI offline bảo mật.">
+  <meta name="keywords" content="iPet, robot AI, robot de ban, robot xe, ESP32, mecanum wheel, smart pet, robot cam xuc">
   <link rel="canonical" href="https://ipet.vn/">
+  <link rel="icon" type="image/png" href="/assets/images/logo.png">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="product">
   <meta property="og:url" content="https://ipet.vn/">
-  <meta property="og:title" content="iPet — Robot AI Để Bàn Có Cảm Xúc Thật">
-  <meta property="og:description" content="Người bạn robot để bàn tương tác cảm xúc, di chuyển bánh Mecanum đa hướng và trí tuệ nhân tạo xử lý trực tiếp offline.">
-  <meta property="og:image" content="https://ipet.vn/assets/og-image.jpg">
+  <meta property="og:title" content="iPet — Robot AI Để Bàn Dáng Xe Đua | Biểu Cảm Sống Động Thật">
+  <meta property="og:description" content="Người bạn robot để bàn dáng xe rover tương tác cảm xúc qua màn hình LCD màu, bánh xe Mecanum drift đa hướng và vi xử lý ESP32-S3 offline.">
+  <meta property="og:image" content="https://ipet.vn/assets/images/ipet-3d-car-master.jpg">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="iPet — Robot AI Để Bàn Có Cảm Xúc Thật">
-  <meta name="twitter:description" content="Người bạn robot để bàn tương tác cảm xúc, di chuyển bánh Mecanum đa hướng.">
+  <meta name="twitter:title" content="iPet — Robot AI Để Bàn Dáng Xe Đua">
+  <meta name="twitter:description" content="Người bạn robot để bàn dáng xe rover với 7 bộ cảm xúc LCD, bánh Mecanum drift 360 độ và AI cục bộ offline.">
+  <meta name="twitter:image" content="https://ipet.vn/assets/images/ipet-3d-car-master.jpg">
 
   <!-- JSON-LD Structured Data for SEO (Product & Organization) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org/",
     "@type": "Product",
-    "name": "iPet — AI Companion Robot",
-    "image": "https://ipet.vn/assets/ipet-product.jpg",
-    "description": "Robot thú cưng để bàn thông minh vi xử lý ESP32-S3, màn hình ILI9341 hiển thị 50+ biểu cảm, cảm biến chạm và bánh xe Mecanum 360 độ.",
+    "name": "iPet — AI Companion Rover Robot",
+    "image": "https://ipet.vn/assets/images/ipet-3d-car-master.jpg",
+    "description": "Robot thú cưng để bàn dáng xe rover thông minh vi xử lý ESP32-S3, màn hình LCD màu hiển thị 7 bộ biểu cảm chân thực, cảm biến chạm TTP223 và bánh xe Mecanum 360 độ.",
     "brand": {
       "@type": "Brand",
       "name": "iPet"
@@ -37,7 +39,7 @@
       "url": "https://ipet.vn/#configurator",
       "priceCurrency": "VND",
       "price": "1490000",
-      "availability": "https://schema.org/InStock",
+      "availability": "https://schema.org/PreOrder",
       "itemCondition": "https://schema.org/NewCondition"
     },
     "aggregateRating": {
@@ -53,7 +55,7 @@
     "@type": "Organization",
     "name": "iPet Robotics",
     "url": "https://ipet.vn",
-    "logo": "https://ipet.vn/assets/logo.png"
+    "logo": "https://ipet.vn/assets/images/logo.png"
   }
   </script>
 
@@ -62,47 +64,56 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Main Stylesheet -->
+  <!-- Main Stylesheet (Dual Theme: Dark & Light) -->
   <link rel="stylesheet" href="style.css">
 
-  <!-- External Libraries -->
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
 
   <!-- Particle Background Canvas -->
   <canvas id="particles-canvas" aria-hidden="true"></canvas>
 
-  <!-- 1. NAVIGATION -->
+  <!-- 1. NAVIGATION (Fixed, spacious, no wrapping) -->
   <header class="navbar" role="banner">
     <div class="nav-container">
-      <a href="#" class="logo" aria-label="iPet Home">
-        <span class="logo-icon"></span>
-        iPet<span class="logo-dot">.</span>
+      <!-- Official Brand Logo on clean white plaque -->
+      <a href="#" class="brand-logo-link" aria-label="iPet Home">
+        <img src="/assets/images/logo.png" alt="iPet Robotics Logo" class="brand-logo-img">
       </a>
 
       <nav class="nav-links" aria-label="Main Navigation">
         <a href="#benefits">Lợi Ích</a>
-        <a href="#3d-showcase">3D Bóc Tách</a>
-        <a href="#interaction">Cảm Xúc</a>
+        <a href="#hardware-gallery">Kiến Trúc CAD & Mạch</a>
+        <a href="#interaction">Cảm Xúc LCD</a>
         <a href="#mecanum-demo">Bánh Mecanum</a>
-        <a href="#configurator">Cấu Hình</a>
+        <a href="#survey">Khảo Sát & Góp Ý</a>
+        <a href="#configurator">Cấu Hình & Giá</a>
         <a href="#specs">Thông Số</a>
         <a href="#reviews">Đánh Giá</a>
         <a href="#faq">FAQ</a>
       </nav>
 
-      <div class="nav-cta" style="display: flex; align-items: center; gap: 0.75rem;">
+      <div class="nav-cta">
+        <!-- Dark / Light Theme Toggle -->
+        <button class="btn-theme-toggle" id="btn-toggle-theme" aria-label="Chuyển đổi giao diện Sáng / Tối" title="Chuyển chế độ Sáng / Tối">
+          <i data-lucide="sun"></i>
+        </button>
+
+        <!-- Order Lookup Button -->
         <button class="btn btn-outline btn-open-lookup" style="padding: 0.5rem 0.9rem; font-size: 0.85rem;" title="Tra cứu đơn hàng">
           <i data-lucide="search"></i> <span>Tra Cứu ĐH</span>
         </button>
+
+        <!-- Cart Button with dynamic badge -->
         <button class="nav-cart-btn" id="btn-open-cart" aria-label="Giỏ hàng">
           <i data-lucide="shopping-bag"></i>
           <span class="nav-cart-badge" id="nav-cart-badge" style="display: none;">0</span>
         </button>
-        <a href="#configurator" class="btn btn-glow">Nhận Nuôi iPet</a>
+
+        <!-- Pre-order CTA -->
+        <a href="#configurator" class="btn btn-primary btn-glow">Đặt Trước iPet</a>
       </div>
 
       <button class="mobile-menu-toggle" aria-label="Mở menu điều hướng" id="mobile-menu-btn">
@@ -115,20 +126,21 @@
   <div class="mobile-nav" id="mobile-nav-drawer" aria-hidden="true">
     <nav class="mobile-nav-links">
       <a href="#benefits" class="mobile-link">Lợi Ích</a>
-      <a href="#3d-showcase" class="mobile-link">3D Bóc Tách</a>
-      <a href="#interaction" class="mobile-link">Cảm Xúc</a>
-      <a href="#mecanum-demo" class="mobile-link">Bánh Mecanum</a>
-      <a href="#configurator" class="mobile-link">Cấu Hình & Giá</a>
+      <a href="#hardware-gallery" class="mobile-link">Kiến Trúc CAD & Mạch Điện</a>
+      <a href="#interaction" class="mobile-link">Cảm Xúc LCD & Tương Tác</a>
+      <a href="#mecanum-demo" class="mobile-link">Bánh Xe Mecanum 360°</a>
+      <a href="#survey" class="mobile-link">Khảo Sát Tính Năng & Góp Ý</a>
+      <a href="#configurator" class="mobile-link">Cấu Hình & Giá Đặt Trước</a>
       <a href="#specs" class="mobile-link">Thông Số Kỹ Thuật</a>
       <a href="#reviews" class="mobile-link">Đánh Giá Khách Hàng</a>
       <a href="#faq" class="mobile-link">Câu Hỏi Thường Gặp</a>
       <a href="#" class="mobile-link btn-open-lookup" style="color: var(--neon-blue);">Tra Cứu Đơn Hàng</a>
-      <a href="#configurator" class="mobile-link btn btn-glow" style="text-align: center; margin-top: 1.5rem;">Nhận Nuôi iPet Ngay</a>
+      <a href="#configurator" class="mobile-link btn btn-glow" style="text-align: center; margin-top: 1.5rem;">Đặt Trước iPet Ngay</a>
     </nav>
   </div>
 
   <main role="main">
-    <!-- 2. HERO SECTION -->
+    <!-- 2. HERO SECTION (iPet Robot Car Form Factor + Real LCD Emotion Canvas) -->
     <section class="hero" id="hero">
       <div class="hero-glow-1"></div>
       <div class="hero-glow-2"></div>
@@ -136,29 +148,29 @@
       <div class="container hero-grid">
         <div class="hero-content">
           <div class="badge fade-in">
-            <span class="badge-dot"></span> Động Cơ Cảm Xúc EmotionEngine™ 2.0
+            <span class="badge-dot"></span> Động Cơ Cảm Xúc EmotionEngine™ 2.0 & ESP32-S3
           </div>
           <h1 class="hero-title fade-in-delay-1">
-            Người Bạn Robot AI <br>
-            <span class="text-gradient">Có Cảm Xúc Thật.</span>
+            Robot AI Để Bàn Dáng Xe Đua <br>
+            <span class="text-gradient">Biểu Cảm Sống Động Thật.</span>
           </h1>
           <p class="hero-subtitle fade-in-delay-2">
-            Gặp gỡ <strong>iPet</strong> — robot đồng hành để bàn thu nhỏ với trí tuệ nhân tạo cục bộ. Em nó biết quan sát, lắng nghe, học hỏi thói quen và phát triển tính cách riêng theo từng cử chỉ xoa đầu của bạn.
+            Gặp gỡ <strong>iPet</strong> — robot xe để bàn tích hợp vi xử lý <strong>ESP32-S3</strong>, màn hình LCD màu thể hiện <strong>7 bộ cảm xúc chân thực</strong> theo thời gian thực, cảm biến chạm điện dung và hệ thống bánh xe Mecanum drift 360° linh hoạt. Không gửi dữ liệu lên đám mây, bảo mật 100% offline.
           </p>
           <div class="hero-actions fade-in-delay-3">
-            <a href="#configurator" class="btn btn-primary btn-glow-purple">Đặt Mua iPet (Freeship)</a>
-            <a href="#3d-showcase" class="btn btn-secondary">
-              <i data-lucide="box" class="btn-icon"></i> Khám Phá 3D Bóc Tách
+            <a href="#configurator" class="btn btn-primary btn-glow">Đặt Trước iPet (Freeship)</a>
+            <a href="#hardware-gallery" class="btn btn-secondary">
+              <i data-lucide="cpu" class="btn-icon"></i> Khám Phá Kiến Trúc CAD & Mạch
             </a>
           </div>
           <div class="hero-stats fade-in-delay-4">
             <div class="stat-item">
-              <span class="stat-num">50+</span>
-              <span class="stat-label">Biểu cảm mắt OLED</span>
+              <span class="stat-num">7 Bộ</span>
+              <span class="stat-label">Biểu Cảm LCD Sống Động</span>
             </div>
             <div class="stat-item">
               <span class="stat-num">360°</span>
-              <span class="stat-label">Drift Bánh Mecanum</span>
+              <span class="stat-label">Drift Bánh Xe Mecanum</span>
             </div>
             <div class="stat-item">
               <span class="stat-num">100%</span>
@@ -167,104 +179,41 @@
           </div>
         </div>
 
-        <!-- Robot Interactive 2D Companion Card -->
+        <!-- Robot Car Card with Live Canvas Emotion Player -->
         <div class="hero-visual fade-in-delay-1">
-          <div class="robot-card-wrapper" id="robot-3d-card">
-            <div class="robot-card-glow"></div>
-            <div class="robot-card">
-              
-              <!-- Companion SVG Face -->
-              <div class="robot-container">
-                <svg id="ipet-robot" viewBox="0 0 400 450" xmlns="http://www.w3.org/2000/svg">
-                  <defs>
-                    <linearGradient id="metal-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#2a2e3d"/>
-                      <stop offset="50%" stop-color="#181a24"/>
-                      <stop offset="100%" stop-color="#0a0b0f"/>
-                    </linearGradient>
-                    <linearGradient id="metal-accent" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stop-color="#4e546d"/>
-                      <stop offset="100%" stop-color="#1c1f2b"/>
-                    </linearGradient>
-                    <linearGradient id="glass-screen" x1="0%" y1="0%" x2="100%" y2="100%">
-                      <stop offset="0%" stop-color="#0d0e12"/>
-                      <stop offset="100%" stop-color="#020203"/>
-                    </linearGradient>
-                    <filter id="glow-soft" x="-20%" y="-20%" width="140%" height="140%">
-                      <feGaussianBlur stdDeviation="4" result="blur" />
-                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                    </filter>
-                  </defs>
-
-                  <ellipse cx="200" cy="410" rx="90" ry="12" fill="rgba(0, 0, 0, 0.6)" filter="url(#glow-soft)" />
-
-                  <!-- Robot Neck -->
-                  <g class="robot-neck">
-                    <path d="M 160 320 Q 200 350 240 320 L 230 380 Q 200 395 170 380 Z" fill="url(#metal-accent)" />
-                    <path id="collar-ring" d="M 165 345 Q 200 365 235 345" fill="none" stroke="#00f0ff" stroke-width="4" stroke-linecap="round" filter="url(#glow-soft)" />
-                  </g>
-
-                  <!-- Robot Base -->
-                  <g class="robot-base">
-                    <path d="M 140 370 Q 200 390 260 370 C 290 405 270 420 200 420 C 130 420 110 405 140 370 Z" fill="url(#metal-grad)" />
-                    <ellipse cx="200" cy="400" rx="30" ry="5" fill="#0c0e14" />
-                    <circle cx="200" cy="400" r="3" fill="#00f0ff" filter="url(#glow-soft)" class="pulse-dot" />
-                  </g>
-
-                  <!-- Ears -->
-                  <g id="robot-ear-left" class="robot-ear">
-                    <path d="M 120 130 C 80 110 60 70 80 50 C 95 35 125 70 135 90 Z" fill="url(#metal-accent)" />
-                    <path d="M 115 118 C 88 102 78 80 90 68 C 100 58 120 85 125 98 Z" fill="#bd00ff" opacity="0.75" filter="url(#glow-soft)" />
-                  </g>
-                  <g id="robot-ear-right" class="robot-ear">
-                    <path d="M 280 130 C 320 110 340 70 320 50 C 305 35 275 70 265 90 Z" fill="url(#metal-accent)" />
-                    <path d="M 285 118 C 312 102 322 80 310 68 C 300 58 280 85 275 98 Z" fill="#00f0ff" opacity="0.75" filter="url(#glow-soft)" />
-                  </g>
-
-                  <!-- Head Assembly -->
-                  <g id="robot-head-group">
-                    <rect x="110" y="90" width="180" height="210" rx="90" ry="90" fill="url(#metal-grad)" stroke="#2d3246" stroke-width="2" />
-                    <rect x="118" y="98" width="164" height="194" rx="82" ry="82" fill="none" stroke="rgba(255, 255, 255, 0.05)" stroke-width="2" />
-                    <rect id="oled-screen" x="125" y="115" width="150" height="160" rx="75" ry="75" fill="url(#glass-screen)" stroke="rgba(255, 255, 255, 0.08)" stroke-width="1.5" />
-                    
-                    <!-- Screen Reflection -->
-                    <path d="M 140 145 C 160 130 200 125 240 135 C 245 137 255 142 250 148 C 240 152 200 142 165 155 C 150 160 138 152 140 145 Z" fill="rgba(255, 255, 255, 0.08)" />
-
-                    <!-- Cheeks Blush -->
-                    <circle id="blush-left" cx="155" cy="225" r="10" fill="#ff007b" opacity="0" filter="url(#glow-soft)" />
-                    <circle id="blush-right" cx="245" cy="225" r="10" fill="#ff007b" opacity="0" filter="url(#glow-soft)" />
-
-                    <!-- Dynamic OLED Eyes -->
-                    <g id="eye-left-container" transform="translate(170, 190)">
-                      <path id="eye-left" d="M -18,-18 L 18,-18 C 24,-18 24,18 18,18 L -18,18 C -24,18 -24,-18 -18,-18 Z" fill="#00f0ff" filter="url(#glow-soft)" />
-                      <circle id="pupil-left" cx="0" cy="0" r="4" fill="#000000" opacity="0.6" />
-                    </g>
-                    <g id="eye-right-container" transform="translate(230, 190)">
-                      <path id="eye-right" d="M -18,-18 L 18,-18 C 24,-18 24,18 18,18 L -18,18 C -24,18 -24,-18 -18,-18 Z" fill="#00f0ff" filter="url(#glow-soft)" />
-                      <circle id="pupil-right" cx="0" cy="0" r="4" fill="#000000" opacity="0.6" />
-                    </g>
-                  </g>
-                </svg>
-              </div>
-
-              <!-- Expression Label -->
-              <div class="expression-badge">
-                <span class="expression-pulse"></span>
-                Trạng thái: <span id="current-emotion-label">Tò mò</span>
-              </div>
-            </div>
+          <div class="car-hero-card" id="car-hero-card">
             
-            <!-- Quick Mood Switcher -->
-            <div class="face-controls-container">
-              <span class="controls-title">Đổi Biểu Cảm</span>
-              <div class="face-buttons">
-                <button class="btn-face-mood active" data-emotion="curious" title="Tò mò"><i data-lucide="eye"></i></button>
-                <button class="btn-face-mood" data-emotion="happy" title="Vui vẻ"><i data-lucide="smile"></i></button>
-                <button class="btn-face-mood" data-emotion="love" title="Yêu thích"><i data-lucide="heart"></i></button>
-                <button class="btn-face-mood" data-emotion="thinking" title="Suy nghĩ"><i data-lucide="help-circle"></i></button>
-                <button class="btn-face-mood" data-emotion="listening" title="Lắng nghe"><i data-lucide="mic"></i></button>
-                <button class="btn-face-mood" data-emotion="sleeping" title="Buồn ngủ"><i data-lucide="moon"></i></button>
-              </div>
+            <!-- Live Screen Status Header -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem;">
+              <span class="car-specs-pill">
+                <i data-lucide="activity"></i> Màn Hình LCD Màu SPI
+              </span>
+              <span id="emotion-display-title" style="color: var(--neon-blue); font-weight: 600; font-size: 0.9rem;">
+                Bình Thường (Normal Eye Blink)
+              </span>
+            </div>
+
+            <!-- Real LCD Screen Frame Sequence Canvas -->
+            <div class="car-hero-screen-box">
+              <canvas id="emotion-screen-canvas" width="380" height="260" aria-label="Màn hình cảm xúc iPet"></canvas>
+            </div>
+
+            <!-- Quick Mood Switcher (7 Real Emotions from project assets) -->
+            <div class="emotion-tabs-grid" style="margin-top: 1.25rem;">
+              <button class="btn-emotion-tab active" data-emotion="Normal" title="Mắt chớp bình thường"><i data-lucide="eye"></i> Normal</button>
+              <button class="btn-emotion-tab" data-emotion="Happy" title="Mắt cười hạnh phúc"><i data-lucide="smile"></i> Happy</button>
+              <button class="btn-emotion-tab" data-emotion="Laugh" title="Cười vui vẻ"><i data-lucide="laugh"></i> Laugh</button>
+              <button class="btn-emotion-tab" data-emotion="Game" title="Chế độ Game pixel"><i data-lucide="gamepad-2"></i> Game</button>
+              <button class="btn-emotion-tab" data-emotion="Speed" title="Tăng tốc độ đua"><i data-lucide="zap"></i> Speed</button>
+              <button class="btn-emotion-tab" data-emotion="Tired" title="Buồn ngủ / Yếu pin"><i data-lucide="battery-low"></i> Tired</button>
+              <button class="btn-emotion-tab" data-emotion="Hypnoise" title="Thôi miên khi cù má"><i data-lucide="disc"></i> Hypnoise</button>
+            </div>
+
+            <!-- Real Car Hardware Highlights -->
+            <div class="car-chassis-details">
+              <span class="car-specs-pill"><i data-lucide="shield-check"></i> Cản trước bo vòm 15cm</span>
+              <span class="car-specs-pill"><i data-lucide="wind"></i> Quạt tản nhiệt</span>
+              <span class="car-specs-pill"><i data-lucide="battery-charging"></i> Khoang pin 18650</span>
             </div>
 
           </div>
@@ -278,168 +227,138 @@
         <div class="sec-header text-center">
           <span class="sec-label">Công Nghệ & Trái Tim</span>
           <h2 class="sec-title">Vì Sao iPet Khác Biệt?</h2>
-          <p class="sec-subtitle">Được cấu thành từ bo mạch vi điều khiển ESP32-S3, màn hình màu sắc nét và bánh xe Mecanum chuyển động linh hoạt.</p>
+          <p class="sec-subtitle">Được cấu thành từ bo mạch vi điều khiển ESP32-S3, màn hình LCD màu sắc nét và bánh xe Mecanum chuyển động linh hoạt.</p>
         </div>
 
         <div class="features-grid">
           <div class="glass-card feature-card scroll-reveal">
             <div class="feature-icon-wrapper blue-glow"><i data-lucide="brain"></i></div>
             <h3>Vi Xử Lý ESP32-S3 NPU</h3>
-            <p>Xử lý âm thanh và hành vi trực tiếp trên bo mạch. Không gửi bản ghi âm lên đám mây, bảo đảm quyền riêng tư tuyệt đối cho gia đình bạn.</p>
+            <p>Xử lý âm thanh, cử chỉ và hành vi trực tiếp trên bo mạch. Không gửi dữ liệu lên đám mây, bảo đảm quyền riêng tư tuyệt đối cho gia đình bạn.</p>
           </div>
           <div class="glass-card feature-card scroll-reveal">
             <div class="feature-icon-wrapper purple-glow"><i data-lucide="compass"></i></div>
             <h3>Bánh Xe Mecanum Đa Hướng</h3>
-            <p>Hệ thống 2 động cơ TT điều khiển qua IC TB6612FNG cho phép iPet di chuyển tiến lùi, xoay 360 độ và drift ngang cực kỳ mượt mà.</p>
+            <p>Hệ thống động cơ TT điều khiển qua IC TB6612FNG cho phép iPet di chuyển tiến lùi, xoay 360 độ và drift ngang cực kỳ mượt mà trên bàn.</p>
           </div>
           <div class="glass-card feature-card scroll-reveal">
             <div class="feature-icon-wrapper blue-glow"><i data-lucide="fingerprint"></i></div>
             <h3>Cảm Biến Chạm Điện Dung TTP223</h3>
-            <p>Cảm biến chạm đặt tại đỉnh đầu phản hồi tức thì với độ trễ 3ms, nhận biết cử chỉ xoa đầu, vỗ nhẹ để phát ra tiếng kêu bíp bíp nũng nịu.</p>
+            <p>Cảm biến chạm đặt tại đỉnh nóc xe phản hồi tức thì với độ trễ 3ms, nhận biết cử chỉ xoa nhẹ để chuyển biểu cảm sang Happy nũng nịu.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 4 & 5. 3D INTERACTIVE SHOWCASE & HARDWARE EXPLODED VIEW -->
-    <section class="three-section" id="3d-showcase">
+    <!-- 4. HARDWARE ARCHITECTURE & CAD GALLERY (Official Real Images & Schematic) -->
+    <section class="hardware-gallery-sec" id="hardware-gallery">
       <div class="container">
         <div class="sec-header text-center">
-          <span class="sec-label">Kiến Trúc Cơ Khí CAD & Phần Cứng</span>
-          <h2 class="sec-title">Mô Hình 3D Bóc Tách Linh Kiện</h2>
-          <p class="sec-subtitle">Kéo chuột hoặc vuốt ngón tay để xoay 360°. Bấm nút "Bóc Tách Linh Kiện" để xem chi tiết từng tầng cơ khí và bo mạch thực tế.</p>
+          <span class="sec-label">Bản Vẽ CAD & Hồ Sơ Điện Tử Thực Tế</span>
+          <h2 class="sec-title">Kiến Trúc Phần Cứng & Thiết Kế 3D</h2>
+          <p class="sec-subtitle">Khám phá chi tiết cấu tạo cơ khí và sơ đồ nguyên lý mạch điện tử điều khiển robot iPet.</p>
         </div>
 
-        <div class="three-experience-container">
-          <!-- 3D Canvas Viewport -->
-          <div class="three-viewport-card">
-            <div id="three-canvas-container"></div>
-            
-            <!-- Hotspots overlay -->
-            <div class="three-hotspots" id="three-hotspots" style="opacity: 0; pointer-events: none;">
-              <div class="hotspot-chip"><span class="dot"></span> Lớp 1: Vỏ CAD khí động học</div>
-              <div class="hotspot-chip"><span class="dot"></span> Lớp 2: Màn hình màu ILI9341 2.8"</div>
-              <div class="hotspot-chip"><span class="dot"></span> Lớp 3: ESP32-S3 + Cặp pin 18650</div>
-              <div class="hotspot-chip"><span class="dot"></span> Lớp 4: Khung gầm CAD & Bánh Mecanum</div>
-            </div>
+        <!-- Gallery Tabs -->
+        <div class="gallery-tabs">
+          <button class="btn-gallery-tab active" data-gallery="car_master">
+            <i data-lucide="box"></i> Mô Hình 3D Toàn Diện
+          </button>
+          <button class="btn-gallery-tab" data-gallery="schematic">
+            <i data-lucide="cpu"></i> Sơ Đồ Nguyên Lý Mạch
+          </button>
+          <button class="btn-gallery-tab" data-gallery="topshell">
+            <i data-lucide="layers"></i> CAD Vỏ Thân Trên
+          </button>
+          <button class="btn-gallery-tab" data-gallery="chassis">
+            <i data-lucide="anchor"></i> CAD Khung Gầm & Động Cơ
+          </button>
+        </div>
 
-            <!-- Controls bar -->
-            <div class="three-controls-bar">
-              <div class="three-color-switch">
-                <span class="color-label">Màu vỏ:</span>
-                <button class="btn-color-swatch obsidian active" data-color="obsidian" title="Đen Obsidian"></button>
-                <button class="btn-color-swatch silver" data-color="silver" title="Bạc Titan"></button>
-                <button class="btn-color-swatch electric_blue" data-color="electric_blue" title="Xanh Điện Tử"></button>
-              </div>
-
-              <div style="display: flex; gap: 0.5rem;">
-                <button class="btn-3d-action" id="btn-reset-3d-cam" title="Căn giữa góc nhìn">
-                  <i data-lucide="rotate-ccw"></i>
-                </button>
-                <button class="btn-3d-action" id="btn-toggle-exploded">
-                  <i data-lucide="split"></i> <span>Bóc Tách Linh Kiện (Exploded View)</span>
-                </button>
-              </div>
-            </div>
+        <!-- Gallery Viewport & Spec Details -->
+        <div class="gallery-main-view">
+          <div class="gallery-image-wrapper">
+            <img id="gallery-featured-img" src="/assets/images/ipet-3d-car-master.jpg" alt="Mô Hình Thiết Kế 3D Chuẩn Kỹ Thuật" class="gallery-featured-img">
           </div>
-
-          <!-- Exploded View Hardware Details -->
-          <div class="three-info-pane">
-            <h3>Cấu Tạo 4 Tầng Chuẩn Xác</h3>
-            <p>Được thiết kế trên phần mềm CAD và lắp ráp cơ điện tử hoàn chỉnh theo sơ đồ nguyên lý mạch:</p>
-
-            <div class="hardware-layers-list">
-              <div class="layer-item">
-                <span class="layer-num">01</span>
-                <div class="layer-text">
-                  <h5>Vỏ Trên CAD Khí Động Học</h5>
-                  <span>Thiết kế bo vòm bánh xe và hốc đặt màn hình vát nghiêng 36° cho góc nhìn mắt tối ưu.</span>
-                </div>
-              </div>
-              <div class="layer-item">
-                <span class="layer-num">02</span>
-                <div class="layer-text">
-                  <h5>Màn Hình Màu ILI9341 2.8" & Cảm Biến Chạm</h5>
-                  <span>Giao tiếp SPI tốc độ cao, hiển thị 50+ trạng thái biểu cảm mượt mà cùng cảm biến TTP223 xoa đầu.</span>
-                </div>
-              </div>
-              <div class="layer-item">
-                <span class="layer-num">03</span>
-                <div class="layer-text">
-                  <h5>Vi Xử Lý ESP32-S3 & Pin Kép 18650</h5>
-                  <span>Vi điều khiển lõi kép 240MHz kèm 2 viên pin 18650 dung lượng 5200mAh chạy liên tục 6-8 tiếng.</span>
-                </div>
-              </div>
-              <div class="layer-item">
-                <span class="layer-num">04</span>
-                <div class="layer-text">
-                  <h5>Khung Gầm CAD & Bánh Xe Mecanum</h5>
-                  <span>Khung chịu lực gá 2 động cơ TT và cụm con lăn bánh Mecanum di chuyển linh hoạt trên mặt bàn.</span>
-                </div>
-              </div>
+          <div class="gallery-info-panel">
+            <h3 id="gallery-title">Mô Hình Thiết Kế 3D Chuẩn Kỹ Thuật & Thẩm Mỹ</h3>
+            <p id="gallery-desc">Thiết kế tổng thể theo tỷ lệ chuẩn 16.5cm x 10cm x 10cm, tích hợp quạt tản nhiệt, khoang pin Li-ion 18650 tích hợp, bộ điều khiển kép Type-C và bánh xe truyền động màu vàng.</p>
+            <div class="cad-specs-list" id="gallery-specs-list">
+              <!-- Populated dynamically by hardwareGallery.js -->
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 6. INTERACTIVE EMOTION DEMO & TOUCH BLUEPRINT -->
+    <!-- 5. INTERACTIVE EMOTION DEMO & TOUCH BLUEPRINT -->
     <section class="interaction-sec" id="interaction">
       <div class="container">
         <div class="sec-header text-center">
           <span class="sec-label">Chạm & Cảm Nhận</span>
-          <h2 class="sec-title">Mô Phỏng Tương Tác Cảm Xúc</h2>
-          <p class="sec-subtitle">Nhấp vào các điểm cảm biến trên sơ đồ để xem phản ứng thực tế của iPet.</p>
+          <h2 class="sec-title">Mô Phỏng Tương Tác Cảm Xúc & Cảm Biến</h2>
+          <p class="sec-subtitle">Nhấp vào các điểm cảm biến trên sơ đồ khung xe để kích hoạt phản hồi cảm xúc trực tiếp trên robot.</p>
         </div>
 
         <div class="interaction-showcase-grid">
           <!-- Touch Sensors Blueprint -->
           <div class="glass-card interaction-card scroll-reveal">
             <div class="card-header">
-              <h3>Sơ Đồ Cảm Biến Chạm (Capacitive Sensor)</h3>
+              <h3>Sơ Đồ Cảm Biến Khung Xe iPet (Rover Blueprint)</h3>
               <p>Rê chuột hoặc chạm vào các điểm sáng để kích hoạt phản hồi.</p>
             </div>
             
             <div class="blueprint-container">
-              <svg id="robot-blueprint" viewBox="0 0 300 350" xmlns="http://www.w3.org/2000/svg">
-                <rect x="75" y="60" width="150" height="180" rx="75" ry="75" fill="none" stroke="rgba(255, 255, 255, 0.15)" stroke-width="2" stroke-dasharray="4 4" />
-                <rect x="85" y="80" width="130" height="140" rx="65" ry="65" fill="none" stroke="rgba(0, 240, 255, 0.1)" stroke-width="1.5" />
-                <path d="M 120 240 Q 150 260 180 240 L 175 285 Q 150 295 125 285 Z" fill="none" stroke="rgba(255, 255, 255, 0.1)" stroke-width="2" />
-                <path d="M 100 280 Q 150 295 200 280 C 220 310 205 320 150 320 C 95 320 80 310 100 280 Z" fill="none" stroke="rgba(255, 255, 255, 0.1)" stroke-width="2" />
+              <svg id="robot-blueprint" viewBox="0 0 320 340" xmlns="http://www.w3.org/2000/svg">
+                <!-- Outer Rover Chassis Outline -->
+                <path d="M 60 70 C 60 40 260 40 260 70 L 270 260 C 270 290 50 290 50 260 Z" fill="none" stroke="rgba(255, 255, 255, 0.15)" stroke-width="2" stroke-dasharray="5 5" />
                 
-                <!-- Sensor Node 1: Head Pat -->
-                <g class="sensor-node" id="node-head" data-sensor="head">
-                  <circle cx="150" cy="65" r="14" class="node-ring" />
-                  <circle cx="150" cy="65" r="6" class="node-center" />
-                  <text x="150" y="42" class="node-label">Cảm biến xoa đầu</text>
+                <!-- Front curved bumper outline -->
+                <path d="M 40 60 Q 160 20 280 60" fill="none" stroke="#00f0ff" stroke-width="3" opacity="0.6" />
+                
+                <!-- Display Area -->
+                <rect x="90" y="80" width="140" height="95" rx="14" fill="none" stroke="rgba(0, 240, 255, 0.3)" stroke-width="2" />
+                <text x="160" y="130" fill="rgba(0, 240, 255, 0.6)" font-size="11" text-anchor="middle" font-family="Space Grotesk">MÀN HÌNH LCD 2.8"</text>
+
+                <!-- Wheels -->
+                <rect x="25" y="90" width="22" height="60" rx="6" fill="rgba(245, 158, 11, 0.4)" stroke="#f59e0b" stroke-width="1.5" />
+                <rect x="273" y="90" width="22" height="60" rx="6" fill="rgba(245, 158, 11, 0.4)" stroke="#f59e0b" stroke-width="1.5" />
+                <rect x="25" y="190" width="22" height="60" rx="6" fill="rgba(245, 158, 11, 0.4)" stroke="#f59e0b" stroke-width="1.5" />
+                <rect x="273" y="190" width="22" height="60" rx="6" fill="rgba(245, 158, 11, 0.4)" stroke="#f59e0b" stroke-width="1.5" />
+                
+                <!-- Sensor Node 1: Top Touch Sensor -->
+                <g class="sensor-node" id="node-head" data-sensor="head" style="cursor: pointer;">
+                  <circle cx="160" cy="50" r="15" class="node-ring" />
+                  <circle cx="160" cy="50" r="6" class="node-center" />
+                  <text x="160" y="30" class="node-label">Cảm biến chạm nóc xe</text>
                 </g>
                 
-                <!-- Sensor Node 2: Left Cheek -->
-                <g class="sensor-node" id="node-cheek-l" data-sensor="cheek-l">
-                  <circle cx="95" cy="170" r="14" class="node-ring" />
-                  <circle cx="95" cy="170" r="6" class="node-center" />
-                  <text x="45" y="174" class="node-label text-right">Má trái (Cù má)</text>
+                <!-- Sensor Node 2: Left Side -->
+                <g class="sensor-node" id="node-cheek-l" data-sensor="cheek-l" style="cursor: pointer;">
+                  <circle cx="75" cy="180" r="14" class="node-ring" />
+                  <circle cx="75" cy="180" r="6" class="node-center" />
+                  <text x="75" y="210" class="node-label text-left">Cảm biến sườn trái</text>
                 </g>
 
-                <!-- Sensor Node 3: Right Cheek -->
-                <g class="sensor-node" id="node-cheek-r" data-sensor="cheek-r">
-                  <circle cx="205" cy="170" r="14" class="node-ring" />
-                  <circle cx="205" cy="170" r="6" class="node-center" />
-                  <text x="255" y="174" class="node-label text-left">Má phải (Cù má)</text>
+                <!-- Sensor Node 3: Right Side -->
+                <g class="sensor-node" id="node-cheek-r" data-sensor="cheek-r" style="cursor: pointer;">
+                  <circle cx="245" cy="180" r="14" class="node-ring" />
+                  <circle cx="245" cy="180" r="6" class="node-center" />
+                  <text x="245" y="210" class="node-label text-right">Cảm biến sườn phải</text>
                 </g>
 
-                <!-- Sensor Node 4: Chest Mic -->
-                <g class="sensor-node" id="node-chest" data-sensor="chest">
-                  <circle cx="150" cy="275" r="14" class="node-ring" />
-                  <circle cx="150" cy="275" r="6" class="node-center" />
-                  <text x="150" y="303" class="node-label">Micro thu âm ngực</text>
+                <!-- Sensor Node 4: Chest Mic / ESP32-S3 -->
+                <g class="sensor-node" id="node-chest" data-sensor="chest" style="cursor: pointer;">
+                  <circle cx="160" cy="230" r="14" class="node-ring" />
+                  <circle cx="160" cy="230" r="6" class="node-center" />
+                  <text x="160" y="260" class="node-label">Micro thu âm ESP32-S3</text>
                 </g>
               </svg>
             </div>
 
             <div class="feedback-log" id="touch-feedback-box">
               <div class="log-indicator"><i data-lucide="activity"></i></div>
-              <span class="log-text">Hệ thống sẵn sàng. Hãy xoa đầu hoặc cù má robot.</span>
+              <span class="log-text">Hệ thống sẵn sàng. Hãy bấm vào các điểm cảm biến để tương tác với iPet.</span>
             </div>
           </div>
 
@@ -488,7 +407,7 @@
       </div>
     </section>
 
-    <!-- 7. MECANUM MOVEMENT DEMO -->
+    <!-- 6. MECANUM MOVEMENT DEMO -->
     <section class="mecanum-section" id="mecanum-demo">
       <div class="container">
         <div class="sec-header text-center">
@@ -560,61 +479,120 @@
       </div>
     </section>
 
-    <!-- 8. HOW IPET WORKS -->
-    <section class="how-it-works-sec" id="how-it-works">
+    <!-- 7. CUSTOMER SURVEY & SUGGESTIONS SECTION -->
+    <section class="survey-sec" id="survey">
       <div class="container">
         <div class="sec-header text-center">
-          <span class="sec-label">Nguyên Lý Hoạt Động</span>
-          <h2 class="sec-title">Từ Cảm Biến Đến Trái Tim AI</h2>
+          <span class="sec-label">Lắng Nghe Người Dùng</span>
+          <h2 class="sec-title">Khảo Sát Tính Năng & Góp Ý Phát Triển</h2>
+          <p class="sec-subtitle">Hãy cho đội ngũ phát triển biết bạn mong muốn những tính năng nào nhất trên iPet để cùng chúng tôi kiến tạo người bạn robot hoàn hảo.</p>
         </div>
 
-        <div class="features-grid">
-          <div class="glass-card feature-card scroll-reveal">
-            <div class="feature-icon-wrapper blue-glow"><i data-lucide="scan"></i></div>
-            <h3>1. Cảm Nhận Đa Chiều</h3>
-            <p>Cảm biến điện dung TTP223 và micro thu âm ghi nhận cử chỉ vuốt ve, giọng nói và chuyển động xung quanh góc bàn.</p>
-          </div>
-          <div class="glass-card feature-card scroll-reveal">
-            <div class="feature-icon-wrapper purple-glow"><i data-lucide="cpu"></i></div>
-            <h3>2. Xử Lý Trí Tuệ Nhân Tạo</h3>
-            <p>ESP32-S3 tính toán tọa độ cảm xúc (Vui vẻ, Thân thiết, Tò mò, Năng lượng) trong vòng dưới 5 mili-giây.</p>
-          </div>
-          <div class="glass-card feature-card scroll-reveal">
-            <div class="feature-icon-wrapper blue-glow"><i data-lucide="sparkles"></i></div>
-            <h3>3. Phản Hồi Sinh Động</h3>
-            <p>Màn hình ILI9341 vẽ biểu cảm mắt, loa phát tiếng kêu bíp bíp và bánh xe Mecanum drift lại gần tay bạn.</p>
-          </div>
+        <div class="survey-card">
+          <form id="customer-survey-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="survey-name">Họ và tên của bạn</label>
+                <input type="text" id="survey-name" placeholder="Nguyễn Văn A">
+              </div>
+              <div class="form-group">
+                <label for="survey-contact">Số điện thoại hoặc Email *</label>
+                <input type="text" id="survey-contact" required placeholder="0988xxxxxx hoặc email@gmail.com">
+              </div>
+            </div>
+
+            <div class="survey-question-group">
+              <label class="survey-question-label">1. Bạn mong muốn iPet có thêm tính năng nào nhất?</label>
+              <div class="survey-chips-grid">
+                <label class="survey-chip">
+                  <input type="radio" name="survey_feature" value="Camera AI nhận diện khuôn mặt" checked>
+                  <span>Camera AI nhận diện gương mặt</span>
+                </label>
+                <label class="survey-chip">
+                  <input type="radio" name="survey_feature" value="Trợ lý ảo giọng nói tiếng Việt">
+                  <span>Trợ lý ảo giọng nói tiếng Việt</span>
+                </label>
+                <label class="survey-chip">
+                  <input type="radio" name="survey_feature" value="Tự động tìm trạm sạc từ tính">
+                  <span>Tự động tìm trạm sạc thông minh</span>
+                </label>
+                <label class="survey-chip">
+                  <input type="radio" name="survey_feature" value="Chế độ đua xe điều khiển từ xa qua App">
+                  <span>Chế độ đua xe qua App điện thoại</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="survey-question-group">
+              <label class="survey-question-label">2. Mục đích sử dụng chính của bạn?</label>
+              <div class="survey-chips-grid">
+                <label class="survey-chip">
+                  <input type="radio" name="survey_usecase" value="Trang trí bàn làm việc & xả stress" checked>
+                  <span>Trang trí bàn làm việc & xả stress</span>
+                </label>
+                <label class="survey-chip">
+                  <input type="radio" name="survey_usecase" value="Học tập STEM / Lập trình ESP32">
+                  <span>Học lập trình robotics STEM</span>
+                </label>
+                <label class="survey-chip">
+                  <input type="radio" name="survey_usecase" value="Làm quà tặng công nghệ độc đáo">
+                  <span>Làm quà tặng công nghệ độc đáo</span>
+                </label>
+                <label class="survey-chip">
+                  <input type="radio" name="survey_usecase" value="Đồ chơi sưu tầm thông minh">
+                  <span>Đồ chơi công nghệ sưu tầm</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="survey-price">3. Mức giá bạn thấy hợp lý cho phiên bản hoàn thiện thương mại?</label>
+              <select id="survey-price">
+                <option value="1.200.000đ - 1.500.000đ">1.200.000 ₫ - 1.500.000 ₫ (Tiêu chuẩn)</option>
+                <option value="1.500.000đ - 1.800.000đ">1.500.000 ₫ - 1.800.000 ₫ (Nâng cao kèm sạc từ tính)</option>
+                <option value="Dưới 1.200.000đ (Bản Kit tự lắp ráp)">Dưới 1.200.000 ₫ (Bản Kit tự lắp ráp)</option>
+                <option value="Trên 2.000.000đ (Full option vỏ carbon/kim loại)">Trên 2.000.000 ₫ (Bản Pro cao cấp)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="survey-suggestions">4. Ý kiến đóng góp & đề xuất cải tiến khác (Tùy chọn)</label>
+              <textarea id="survey-suggestions" rows="3" placeholder="Chia sẻ thêm bất kỳ mong muốn nào của bạn về kiểu dáng, màu sắc, âm thanh..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-glow btn-full" style="font-size: 1rem; padding: 0.9rem;">
+              <i data-lucide="send"></i> Gửi Ý Kiến Đóng Góp
+            </button>
+          </form>
+
+          <div id="survey-result-msg" style="display: none; margin-top: 1.5rem;"></div>
         </div>
       </div>
     </section>
 
-    <!-- 9. PRODUCT CONFIGURATOR & PRICING -->
+    <!-- 8. PRODUCT CONFIGURATOR & PRICING (Pre-Order Ready) -->
     <section class="configurator-section" id="configurator">
       <div class="container">
         <div class="sec-header text-center">
-          <span class="sec-label">Chọn Phiên Bản & Đặt Mua</span>
-          <h2 class="sec-title">Cấu Hình iPet Của Bạn</h2>
-          <p class="sec-subtitle">Lựa chọn phiên bản, màu vỏ và phụ kiện yêu thích. Miễn phí vận chuyển toàn quốc cho tất cả đơn hàng robot.</p>
+          <span class="sec-label">Chọn Phiên Bản & Đặt Hàng</span>
+          <h2 class="sec-title">Cấu Hình & Đặt Trước iPet</h2>
+          <p class="sec-subtitle">Chương trình mở đặt trước độc quyền — Nhận ngay ưu đãi miễn phí vận chuyển toàn quốc và bộ sticker quà tặng.</p>
         </div>
 
         <div class="configurator-grid">
-          <!-- Left: Preview Box -->
+          <!-- Left: Sticky Product Preview Box -->
           <div class="config-preview-card">
-            <div class="config-img-box">
-              <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" style="max-width: 200px; margin: 0 auto; display: block;">
-                <rect x="30" y="30" width="140" height="140" rx="30" fill="#181d29" stroke="#00f0ff" stroke-width="3" />
-                <rect x="50" y="55" width="100" height="70" rx="16" fill="#000" />
-                <path d="M 65 85 Q 75 75 85 85" stroke="#00f0ff" stroke-width="4" fill="none" stroke-linecap="round" />
-                <path d="M 115 85 Q 125 75 135 85" stroke="#00f0ff" stroke-width="4" fill="none" stroke-linecap="round" />
-                <circle cx="100" cy="110" r="4" fill="#00f0ff" />
-              </svg>
+            <span class="preorder-badge">ĐỢT ĐẶT TRƯỚC (PRE-ORDER) • GIAO THÁNG 10/2026</span>
+            <div class="config-preview-img-box">
+              <img src="/assets/images/ipet-3d-car-master.jpg" alt="iPet Rover Robot" id="config-product-preview-img">
             </div>
             <h3 id="sticky-bar-variant">iPet Standard (x1)</h3>
             <p class="text-sm text-secondary" style="margin-top: 0.3rem;">Màu đang chọn: <strong id="selected-color-label" class="text-cyan">Đen Obsidian</strong></p>
             <div style="margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-light);">
-              <span class="text-sm text-secondary">Cam kết bảo hành</span>
+              <span class="text-sm text-secondary">Cam kết đặt trước chính hãng</span>
               <p style="font-size: 0.88rem; color: #34d399; margin-top: 0.3rem;">✓ Đổi mới 1-1 trong 30 ngày nếu lỗi kỹ thuật</p>
-              <p style="font-size: 0.88rem; color: #34d399;">✓ Miễn phí giao hàng toàn quốc</p>
+              <p style="font-size: 0.88rem; color: #34d399;">✓ Miễn phí giao hàng toàn quốc khi nhận máy</p>
+              <p style="font-size: 0.88rem; color: #34d399;">✓ Hỗ trợ kỹ thuật phần cứng và firmware trọn đời</p>
             </div>
           </div>
 
@@ -630,7 +608,7 @@
                   <div class="variant-meta">
                     <h4>iPet Standard</h4>
                     <p>Robot hoàn chỉnh lắp ráp sẵn, phụ kiện sạc Type-C, hướng dẫn sử dụng nhanh.</p>
-                    <span class="stock-tag">Còn hàng</span>
+                    <span class="stock-tag">Đặt trước đợt 1</span>
                   </div>
                   <div class="variant-pricing">
                     <span class="variant-price">1.490.000 ₫</span>
@@ -641,7 +619,7 @@
                   <div class="variant-meta">
                     <h4>iPet Maker / Dev Kit</h4>
                     <p>Bộ linh kiện rời kèm mã nguồn ESP-IDF/Arduino, sơ đồ mạch và video tự ráp cho sinh viên/maker.</p>
-                    <span class="stock-tag">Còn hàng</span>
+                    <span class="stock-tag">Đặt trước đợt 1</span>
                   </div>
                   <div class="variant-pricing">
                     <span class="variant-price">1.290.000 ₫</span>
@@ -652,7 +630,7 @@
                   <div class="variant-meta">
                     <h4>iPet Cyber Pro</h4>
                     <p>Vỏ trong suốt Cyberpunk lộ mạch, trạm sạc từ tính thông minh, quyền truy cập API nâng cao.</p>
-                    <span class="stock-tag">Còn hàng</span>
+                    <span class="stock-tag">Đặt trước đợt 1</span>
                   </div>
                   <div class="variant-pricing">
                     <span class="variant-price">1.890.000 ₫</span>
@@ -735,7 +713,7 @@
                   <i data-lucide="shopping-bag"></i> Thêm Vào Giỏ Hàng
                 </button>
                 <button class="btn btn-primary btn-glow" id="btn-buy-now">
-                  <i data-lucide="zap"></i> Mua Ngay (Freeship)
+                  <i data-lucide="zap"></i> Đặt Trước Ngay (Freeship)
                 </button>
               </div>
             </div>
@@ -744,7 +722,7 @@
       </div>
     </section>
 
-    <!-- 10. TECHNICAL SPECIFICATIONS MATRIX -->
+    <!-- 9. TECHNICAL SPECIFICATIONS MATRIX -->
     <section class="specs-sec" id="specs">
       <div class="container">
         <div class="sec-header text-center">
@@ -762,7 +740,7 @@
               <div class="spec-val"><span>Bộ nhớ:</span> 8MB PSRAM / 16MB Flash</div>
               <div class="spec-val"><span>Kết nối:</span> Wi-Fi 2.4G & Bluetooth 5</div>
             </div>
-            <p>Hỗ trợ tập lệnh vector AI tăng tốc độ nhận diện cảm xúc và giọng nói mà không cần internet.</p>
+            <p>Hỗ trợ tập lệnh vector AI tăng tốc độ nhận diện cảm xúc và âm thanh mà không cần internet.</p>
           </div>
 
           <div class="glass-card spec-card scroll-reveal">
@@ -773,7 +751,7 @@
               <div class="spec-val"><span>Góc nghiêng:</span> 36 độ vát công thái học</div>
               <div class="spec-val"><span>Tấm nền:</span> Kính quang học chống lóa</div>
             </div>
-            <p>Hiển thị đôi mắt robot cyan/purple sắc nét với tần số quét 60Hz không mỏi mắt khi để bàn.</p>
+            <p>Hiển thị 7 bộ biểu cảm hoạt hình sắc nét với tần số quét 60Hz không mỏi mắt khi để bàn.</p>
           </div>
 
           <div class="glass-card spec-card scroll-reveal">
@@ -784,13 +762,13 @@
               <div class="spec-val"><span>Driver động cơ:</span> TB6612FNG Dual H-Bridge</div>
               <div class="spec-val"><span>Cổng sạc:</span> Type-C sạc nhanh 2S BMS</div>
             </div>
-            <p>Thời lượng hoạt động 6-8 tiếng liên tục. Hỗ trợ tự ngắt khi sạc đầy và bảo vệ quá áp.</p>
+            <p>Thời lượng hoạt động 6-8 tiếng liên tục. Hỗ trợ tự ngắt khi sạc đầy và bảo vệ quá nhiệt/quá áp.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 11. CUSTOMER REVIEWS -->
+    <!-- 10. CUSTOMER REVIEWS -->
     <section class="reviews-sec" id="reviews" style="padding: 80px 0;">
       <div class="container">
         <div class="sec-header text-center">
@@ -807,7 +785,7 @@
               <span style="color: #f59e0b;">★★★★★</span>
             </div>
             <p class="text-sm text-secondary" style="margin-bottom: 0.75rem;">
-              "Màn hình hiển thị mắt OLED/LCD cực nét, phản hồi chạm đầu rất nhạy. Bánh xe Mecanum trôi ngang nhìn rất đã mắt!"
+              "Màn hình hiển thị 7 bộ cảm xúc cực nét, xoa đầu phản hồi tức thì. Bánh xe Mecanum trôi ngang nhìn rất đã mắt!"
             </p>
             <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted);">
               <span>Phiên bản: iPet Standard</span>
@@ -821,7 +799,7 @@
               <span style="color: #f59e0b;">★★★★★</span>
             </div>
             <p class="text-sm text-secondary" style="margin-bottom: 0.75rem;">
-              "Bản Maker Kit rất tuyệt vời cho sinh viên ngành tự động hóa hoặc IoT. Mã nguồn ESP32-S3 viết rất sạch, dễ mod thêm biểu cảm."
+              "Bản Maker Kit rất tuyệt vời cho sinh viên ngành tự động hóa hoặc IoT. Sơ đồ nguyên lý mạch rõ ràng, mã nguồn ESP32-S3 viết rất sạch."
             </p>
             <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted);">
               <span>Phiên bản: iPet Maker / Dev Kit</span>
@@ -835,7 +813,7 @@
               <span style="color: #f59e0b;">★★★★★</span>
             </div>
             <p class="text-sm text-secondary" style="margin-bottom: 0.75rem;">
-              "Đặt để trên bàn làm việc giải tỏa stress tốt. Mỗi lần gõ phím xong xoa đầu em nó kêu tút bíp rất cưng!"
+              "Đặt trên bàn làm việc giải tỏa stress cực tốt. Kiểu dáng xe đua hiện đại, không có tai thỏ vướng víu, quạt tản nhiệt chạy êm ru."
             </p>
             <div style="display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-muted);">
               <span>Phiên bản: iPet Standard</span>
@@ -852,7 +830,7 @@
       </div>
     </section>
 
-    <!-- 12. WARRANTY, SHIPPING & RETURNS -->
+    <!-- 11. WARRANTY, SHIPPING & RETURNS -->
     <section class="policy-sec" style="padding: 60px 0; border-top: 1px solid var(--border-light); border-bottom: 1px solid var(--border-light);">
       <div class="container">
         <div class="features-grid">
@@ -875,7 +853,7 @@
       </div>
     </section>
 
-    <!-- 13. FAQ ACCORDION -->
+    <!-- 12. FAQ ACCORDION -->
     <section class="faq-sec" id="faq">
       <div class="container">
         <div class="sec-header text-center">
@@ -886,7 +864,7 @@
         <div class="faq-list">
           <details class="glass-card faq-item scroll-reveal" open>
             <summary>iPet có cần kết nối Internet hoặc Wi-Fi liên tục để chơi không? <i data-lucide="chevron-down"></i></summary>
-            <p>Không cần! Toàn bộ thuật toán nhận diện cảm xúc, chuyển động bánh xe Mecanum và phản hồi âm thanh đều được vi điều khiển ESP32-S3 xử lý cục bộ 100% offline. Bạn chỉ cần bật công tắc là iPet hoạt động ngay lập tức.</p>
+            <p>Không cần! Toàn bộ 7 bộ cảm xúc hoạt hình, chuyển động bánh xe Mecanum và phản hồi âm thanh đều được vi điều khiển ESP32-S3 xử lý cục bộ 100% offline. Bạn chỉ cần bật công tắc là iPet hoạt động ngay lập tức.</p>
           </details>
 
           <details class="glass-card faq-item scroll-reveal">
@@ -896,7 +874,7 @@
 
           <details class="glass-card faq-item scroll-reveal">
             <summary>Bản Maker Kit có khó tự lắp ráp đối với người mới không? <i data-lucide="chevron-down"></i></summary>
-            <p>Bản Maker Kit đi kèm đầy đủ linh kiện, ốc vít, cáp nối sẵn chân cắm (không cần hàn chì phức tạp) và tài liệu video hướng dẫn từng bước. Rất phù hợp cho học sinh, sinh viên yêu thích STEM/Robotics muốn tìm hiểu lập trình Arduino/ESP-IDF.</p>
+            <p>Bản Maker Kit đi kèm đầy đủ linh kiện, sơ đồ nguyên lý mạch, ốc vít, cáp nối sẵn chân cắm (không cần hàn chì phức tạp) và tài liệu video hướng dẫn từng bước. Rất phù hợp cho học sinh, sinh viên yêu thích STEM/Robotics muốn tìm hiểu lập trình Arduino/ESP-IDF.</p>
           </details>
 
           <details class="glass-card faq-item scroll-reveal">
@@ -907,26 +885,28 @@
       </div>
     </section>
 
-    <!-- 14. FINAL CTA -->
+    <!-- 13. FINAL CTA -->
     <section class="footer-cta-sec">
       <div class="cta-glow"></div>
       <div class="container text-center scroll-reveal">
-        <h2>Đưa Người Bạn Tương Lai Về Bàn Làm Việc Của Bạn</h2>
+        <h2>Đưa Người Bạn Robot Xe Tương Lai Về Bàn Làm Việc Của Bạn</h2>
         <p>Số lượng mỗi đợt sản xuất linh kiện có giới hạn. Đặt hàng ngay hôm nay để nhận ưu đãi miễn phí vận chuyển và quà tặng sticker độc quyền.</p>
         <div class="cta-btns">
-          <a href="#configurator" class="btn btn-primary btn-glow">Nhận Nuôi iPet Ngay</a>
-          <a href="#3d-showcase" class="btn btn-secondary">Xem 3D Bóc Tách</a>
+          <a href="#configurator" class="btn btn-primary btn-glow">Đặt Trước iPet Ngay</a>
+          <a href="#hardware-gallery" class="btn btn-secondary">Xem Kiến Trúc CAD & Mạch</a>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- 15. FOOTER -->
+  <!-- 14. FOOTER -->
   <footer class="footer" role="contentinfo">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <a href="#" class="logo">iPet<span class="logo-dot">.</span></a>
-        <p>Smart Pet. Real Connection. Robot thú cưng để bàn với trí tuệ nhân tạo và tương tác cơ điện tử cảm xúc.</p>
+        <a href="#" class="brand-logo-link" style="display: inline-flex; width: fit-content; margin-bottom: 1rem;">
+          <img src="/assets/images/logo.png" alt="iPet Logo" class="brand-logo-img">
+        </a>
+        <p>Smart Pet. Real Connection. Robot thú cưng để bàn dáng xe rover với trí tuệ nhân tạo và tương tác cơ điện tử cảm xúc.</p>
         <div class="social-links">
           <a href="#" aria-label="GitHub"><i data-lucide="github"></i></a>
           <a href="#" aria-label="Facebook"><i data-lucide="facebook"></i></a>
@@ -936,13 +916,15 @@
       <div class="footer-links">
         <h5>Sản Phẩm</h5>
         <a href="#benefits">Lợi Ích</a>
-        <a href="#3d-showcase">3D Bóc Tách</a>
-        <a href="#configurator">Cấu Hình & Giá</a>
+        <a href="#hardware-gallery">Kiến Trúc CAD & Mạch</a>
+        <a href="#interaction">Cảm Xúc LCD</a>
+        <a href="#configurator">Cấu Hình & Giá Đặt Trước</a>
         <a href="#specs">Thông Số Phần Cứng</a>
       </div>
       <div class="footer-links">
         <h5>Hỗ Trợ Khách Hàng</h5>
         <a href="#" class="btn-open-lookup">Tra Cứu Đơn Hàng</a>
+        <a href="#survey">Khảo Sát Tính Năng</a>
         <a href="#faq">Câu Hỏi Thường Gặp</a>
         <a href="/admin" target="_blank">Quản Trị Viên (Admin)</a>
         <a href="mailto:support@ipet.vn">support@ipet.vn</a>
@@ -971,7 +953,7 @@
           <i data-lucide="shopping-bag"></i> Giỏ Hàng
         </button>
         <button class="btn btn-primary btn-glow" id="btn-sticky-buy">
-          Mua Ngay
+          Đặt Trước Ngay
         </button>
       </div>
     </div>
@@ -1206,7 +1188,7 @@
         </div>
         <div class="form-group">
           <label>Nhận xét chi tiết</label>
-          <textarea id="review-content" required rows="4" placeholder="Cảm nghĩ của bạn về màn hình cảm xúc, bánh xe Mecanum hoặc sự tương tác..." style="width: 100%; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid var(--border-light); border-radius: 8px; color: #fff; font-family: inherit;"></textarea>
+          <textarea id="review-content" required rows="4" placeholder="Cảm nghĩ của bạn về màn hình cảm xúc, bánh xe Mecanum hoặc sự tương tác..." style="width: 100%; padding: 0.75rem; background: rgba(0,0,0,0.3); border: 1px solid var(--border-light); border-radius: 8px; color: inherit; font-family: inherit;"></textarea>
         </div>
         <button type="submit" class="btn btn-primary btn-full">Gửi Đánh Giá</button>
       </form>
@@ -1216,10 +1198,12 @@
   <!-- Application Scripts -->
   <script src="/js/analytics.js"></script>
   <script src="/js/motion.js"></script>
+  <script src="/js/themeToggle.js"></script>
   <script src="/js/api.js"></script>
-  <script src="/js/threeExperience.js"></script>
-  <script src="/js/emotionSim.js"></script>
+  <script src="/js/emotionPlayer.js"></script>
+  <script src="/js/hardwareGallery.js"></script>
   <script src="/js/mecanumSim.js"></script>
+  <script src="/js/survey.js"></script>
   <script src="/js/configurator.js"></script>
   <script src="/js/cart.js"></script>
   <script src="/js/checkout.js"></script>
