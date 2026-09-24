@@ -14,8 +14,12 @@ const { getDb } = require('./db/database');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Initialize database schema on startup
-getDb();
+// Initialize database schema on startup (non-fatal if runtime lacks node:sqlite)
+try {
+  getDb();
+} catch (err) {
+  console.warn('[iPet Server] Database init skipped:', err.message);
+}
 
 // Middlewares
 app.use(cors());

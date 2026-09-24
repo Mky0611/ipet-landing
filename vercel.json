@@ -1,10 +1,9 @@
 {
   "version": 2,
+  "installCommand": "npm install",
+  "buildCommand": "cp index.html robots.txt sitemap.xml style.css main.js public/",
+  "outputDirectory": "public",
   "rewrites": [
-    {
-      "source": "/admin",
-      "destination": "/admin/index.html"
-    },
     {
       "source": "/api/(.*)",
       "destination": "/api/index.js"

@@ -3,7 +3,13 @@
  * Provides persistent, zero-dependency ACID storage.
  */
 
-const { DatabaseSync } = require('node:sqlite');
+let DatabaseSync;
+try {
+  ({ DatabaseSync } = require('node:sqlite'));
+} catch {
+  DatabaseSync = null;
+  console.warn('[iPet DB] node:sqlite not available on this runtime. API routes requiring DB will return errors.');
+}
 const path = require('node:path');
 const fs = require('node:fs');
 const crypto = require('node:crypto');
@@ -14,6 +20,9 @@ const DB_PATH = process.env.DB_PATH || (isVercel ? path.join('/tmp', 'ipet_data.
 let dbInstance = null;
 
 function getDb() {
+  if (!DatabaseSync) {
+    throw new Error('node:sqlite is not available on this runtime. Database operations are disabled.');
+  }
   if (!dbInstance) {
     dbInstance = new DatabaseSync(DB_PATH);
     initSchema(dbInstance);
