@@ -13,16 +13,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/thinhnpdev-ui/ipet-landing.git"
+    "url": "git+https://github.com/Mky0611/ipet-landing.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "bugs": {
-    "url": "https://github.com/thinhnpdev-ui/ipet-landing/issues"
+    "url": "https://github.com/Mky0611/ipet-landing/issues"
   },
-  "homepage": "https://github.com/thinhnpdev-ui/ipet-landing#readme",
+  "homepage": "https://github.com/Mky0611/ipet-landing#readme",
   "dependencies": {
     "cors": "^2.8.6",
     "express": "^5.2.1"
