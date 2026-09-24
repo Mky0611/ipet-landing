@@ -8,7 +8,8 @@ const path = require('node:path');
 const fs = require('node:fs');
 const crypto = require('node:crypto');
 
-const DB_PATH = process.env.DB_PATH || path.join(__dirname, '..', '..', 'ipet_data.sqlite');
+const isVercel = Boolean(process.env.VERCEL);
+const DB_PATH = process.env.DB_PATH || (isVercel ? path.join('/tmp', 'ipet_data.sqlite') : path.join(__dirname, '..', '..', 'ipet_data.sqlite'));
 
 let dbInstance = null;
 
