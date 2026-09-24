@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>iPet Admin — Bảng Điều Khiển Quản Trị Đơn Hàng & Vận Hành</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin/admin.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="login-screen" class="login-wrapper">
+    <div class="login-card">
+      <div class="login-header">
+        <div class="logo-box">
+          <i data-lucide="bot"></i>
+        </div>
+        <h2>iPet Admin Control</h2>
+        <p>Đăng nhập bảng điều khiển vận hành D2C</p>
+      </div>
+      <form id="admin-login-form">
+        <div class="form-group">
+          <label for="admin-username">Tên đăng nhập</label>
+          <input type="text" id="admin-username" required placeholder="admin" autocomplete="username">
+        </div>
+        <div class="form-group">
+          <label for="admin-password">Mật khẩu</label>
+          <input type="password" id="admin-password" required placeholder="••••••••" autocomplete="current-password">
+        </div>
+        <div id="login-error" class="alert-error" style="display: none;"></div>
+        <button type="submit" class="btn btn-primary" id="btn-login-submit">
+          <span>Đăng nhập hệ thống</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main Dashboard App -->
+  <div id="dashboard-app" class="dashboard-wrapper" style="display: none;">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-dot"></span>
+        <span class="brand-text">iPet Admin</span>
+      </div>
+      <nav class="sidebar-nav">
+        <button class="nav-item active" data-tab="overview">
+          <i data-lucide="layout-dashboard"></i> Tổng quan
+        </button>
+        <button class="nav-item" data-tab="orders">
+          <i data-lucide="shopping-bag"></i> Đơn hàng <span class="badge" id="badge-orders-count">0</span>
+        </button>
+        <button class="nav-item" data-tab="inventory">
+          <i data-lucide="boxes"></i> Quản lý kho
+        </button>
+        <button class="nav-item" data-tab="reviews">
+          <i data-lucide="star"></i> Đánh giá khách
+        </button>
+        <button class="nav-item" data-tab="coupons">
+          <i data-lucide="ticket"></i> Mã giảm giá
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="admin-user-info">
+          <div class="avatar"><i data-lucide="user-check"></i></div>
+          <div class="user-meta">
+            <span class="name" id="display-admin-name">Admin</span>
+            <span class="role">Superadmin</span>
+          </div>
+        </div>
+        <button id="btn-logout" class="btn-logout" title="Đăng xuất">
+          <i data-lucide="log-out"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <header class="content-header">
+        <h1 id="tab-title">Tổng quan doanh thu & Đơn hàng</h1>
+        <div class="header-actions">
+          <button class="btn btn-secondary btn-refresh" id="btn-refresh-data">
+            <i data-lucide="rotate-cw"></i> Làm mới dữ liệu
+          </button>
+          <a href="/" target="_blank" class="btn btn-outline">
+            <i data-lucide="external-link"></i> Xem Cửa Hàng
+          </a>
+        </div>
+      </header>
+
+      <!-- TAB 1: OVERVIEW -->
+      <section id="tab-overview" class="tab-pane active">
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-icon blue"><i data-lucide="dollar-sign"></i></div>
+            <div class="metric-info">
+              <span class="metric-label">Doanh thu thực nhận</span>
+              <h3 class="metric-value" id="stat-revenue">0 ₫</h3>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon purple"><i data-lucide="shopping-cart"></i></div>
+            <div class="metric-info">
+              <span class="metric-label">Tổng số đơn hàng</span>
+              <h3 class="metric-value" id="stat-total-orders">0</h3>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon green"><i data-lucide="check-circle-2"></i></div>
+            <div class="metric-info">
+              <span class="metric-label">Đơn đã thanh toán</span>
+              <h3 class="metric-value" id="stat-paid-orders">0</h3>
+            </div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-icon cyan"><i data-lucide="cpu"></i></div>
+            <div class="metric-info">
+              <span class="metric-label">Tổng tồn kho iPet</span>
+              <h3 class="metric-value" id="stat-inventory-total">0 robot</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-columns">
+          <div class="card recent-orders-card">
+            <div class="card-header">
+              <h3>Đơn hàng mới nhất</h3>
+              <button class="link-btn" onclick="switchTab('orders')">Xem tất cả</button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table" id="table-recent-orders">
+                <thead>
+                  <tr>
+                    <th>Mã ĐH</th>
+                    <th>Khách hàng</th>
+                    <th>Phiên bản</th>
+                    <th>Tổng tiền</th>
+                    <th>PTTT</th>
+                    <th>Trạng thái</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card stock-summary-card">
+            <div class="card-header">
+              <h3>Tình trạng tồn kho phần cứng</h3>
+            </div>
+            <div class="stock-list" id="overview-stock-list">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: ORDERS MANAGEMENT -->
+      <section id="tab-orders" class="tab-pane">
+        <div class="filters-bar">
+          <div class="search-box">
+            <i data-lucide="search"></i>
+            <input type="text" id="order-search-input" placeholder="Tìm theo Mã ĐH, Tên hoặc SĐT...">
+          </div>
+          <div class="status-filters" id="order-status-filters">
+            <button class="filter-btn active" data-status="ALL">Tất cả</button>
+            <button class="filter-btn" data-status="PAYMENT_PENDING">Chờ VietQR</button>
+            <button class="filter-btn" data-status="PAID">Đã thanh toán</button>
+            <button class="filter-btn" data-status="PROCESSING">Đang lắp ráp</button>
+            <button class="filter-btn" data-status="SHIPPING">Đang giao</button>
+            <button class="filter-btn" data-status="DELIVERED">Đã giao</button>
+            <button class="filter-btn" data-status="CANCELLED">Đã hủy</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="table-responsive">
+            <table class="data-table" id="table-orders-full">
+              <thead>
+                <tr>
+                  <th>Mã đơn</th>
+                  <th>Thời gian</th>
+                  <th>Khách hàng & SĐT</th>
+                  <th>Địa chỉ giao hàng</th>
+                  <th>Sản phẩm & Màu</th>
+                  <th>Tổng thu</th>
+                  <th>Trạng thái</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: INVENTORY MANAGEMENT -->
+      <section id="tab-inventory" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <h3>Cập nhật số lượng kho hàng (Real-time Stock Control)</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="table-inventory-mgmt">
+              <thead>
+                <tr>
+                  <th>Mã phiên bản</th>
+                  <th>Tên phiên bản</th>
+                  <th>Giá niêm yết</th>
+                  <th>Tồn kho hiện tại</th>
+                  <th>Trạng thái</th>
+                  <th>Cập nhật số lượng</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: REVIEWS MODERATION -->
+      <section id="tab-reviews" class="tab-pane">
+        <div class="card">
+          <div class="card-header">
+            <h3>Duyệt & Quản lý Đánh Giá Từ Khách Hàng</h3>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="table-reviews-mgmt">
+              <thead>
+                <tr>
+                  <th>Khách hàng</th>
+                  <th>Phiên bản</th>
+                  <th>Số sao</th>
+                  <th>Nội dung nhận xét</th>
+                  <th>Thời gian</th>
+                  <th>Trạng thái duyệt</th>
+                  <th>Thao tác</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: COUPONS -->
+      <section id="tab-coupons" class="tab-pane">
+        <div class="dashboard-columns">
+          <div class="card">
+            <div class="card-header">
+              <h3>Tạo mã giảm giá mới</h3>
+            </div>
+            <form id="form-create-coupon">
+              <div class="form-group">
+                <label>Mã Voucher (Ví dụ: IPETPROMO)</label>
+                <input type="text" id="coupon-code" required placeholder="IPETPROMO" style="text-transform: uppercase;">
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Loại giảm giá</label>
+                  <select id="coupon-type">
+                    <option value="percent">Phần trăm (%)</option>
+                    <option value="fixed">Số tiền cố định (VNĐ)</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label>Giá trị giảm</label>
+                  <input type="number" id="coupon-value" required min="1" placeholder="10 (nếu %) hoặc 50000">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>Đơn hàng tối thiểu (VNĐ)</label>
+                  <input type="number" id="coupon-min-order" value="1000000" min="0">
+                </div>
+                <div class="form-group">
+                  <label>Số lượt dùng tối đa</label>
+                  <input type="number" id="coupon-max-uses" value="100" min="1">
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Lưu mã giảm giá</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Danh sách mã giảm giá đang kích hoạt</h3>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table" id="table-coupons-list">
+                <thead>
+                  <tr>
+                    <th>Mã</th>
+                    <th>Loại</th>
+                    <th>Giá trị</th>
+                    <th>Đã dùng / Giới hạn</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Order Detail & Action Modal -->
+  <div id="order-modal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="modal-order-title">Chi tiết đơn hàng</h3>
+        <button class="btn-close-modal" id="btn-close-order-modal">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-order-body">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin/admin.js"></script>
+</body>
+</html>

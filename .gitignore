@@ -5,3 +5,6 @@
 
 # Temporary files
 *.log
+node_modules/
+*.sqlite
+ipet_data.sqlite
