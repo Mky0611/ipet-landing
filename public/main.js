@@ -1,6 +1,6 @@
 /**
  * iPet Main Application Entry Point
- * Orchestrates animations, particle canvas, mobile navigation and review modal.
+ * Orchestrates animations, particle canvas, mobile navigation, interactive voice prompts and review modal.
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -9,34 +9,62 @@ document.addEventListener('DOMContentLoaded', () => {
     lucide.createIcons();
   }
 
-  // --- MOBILE NAV DRAWER ---
+  // --- MOBILE NAV DRAWER & ACCESSIBILITY ---
   const mobileMenuBtn = document.getElementById('mobile-menu-btn');
   const mobileNavDrawer = document.getElementById('mobile-nav-drawer');
   const mobileLinks = document.querySelectorAll('.mobile-link');
-  
+
+  const closeMobileNav = () => {
+    if (!mobileNavDrawer || !mobileMenuBtn) return;
+    mobileNavDrawer.style.height = '0';
+    mobileNavDrawer.setAttribute('aria-hidden', 'true');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+    const icon = mobileMenuBtn.querySelector('i');
+    if (icon) {
+      icon.setAttribute('data-lucide', 'menu');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+  };
+
+  const openMobileNav = () => {
+    if (!mobileNavDrawer || !mobileMenuBtn) return;
+    mobileNavDrawer.style.height = '360px';
+    mobileNavDrawer.setAttribute('aria-hidden', 'false');
+    mobileMenuBtn.setAttribute('aria-expanded', 'true');
+    const icon = mobileMenuBtn.querySelector('i');
+    if (icon) {
+      icon.setAttribute('data-lucide', 'x');
+      if (typeof lucide !== 'undefined') lucide.createIcons();
+    }
+  };
+
   if (mobileMenuBtn && mobileNavDrawer) {
     mobileMenuBtn.addEventListener('click', () => {
-      const isOpen = mobileNavDrawer.style.height === '360px';
-      mobileNavDrawer.style.height = isOpen ? '0' : '360px';
-      mobileNavDrawer.setAttribute('aria-hidden', String(isOpen));
-      
-      const icon = mobileMenuBtn.querySelector('i');
-      if (icon) {
-        icon.setAttribute('data-lucide', isOpen ? 'menu' : 'x');
-        lucide.createIcons();
+      const isOpen = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+      if (isOpen) {
+        closeMobileNav();
+      } else {
+        openMobileNav();
       }
     });
 
     mobileLinks.forEach(link => {
-      link.addEventListener('click', () => {
-        mobileNavDrawer.style.height = '0';
-        mobileNavDrawer.setAttribute('aria-hidden', 'true');
-        const icon = mobileMenuBtn.querySelector('i');
-        if (icon) {
-          icon.setAttribute('data-lucide', 'menu');
-          lucide.createIcons();
-        }
-      });
+      link.addEventListener('click', closeMobileNav);
+    });
+
+    // Escape key listener for accessible closing
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeMobileNav();
+        // Also close any open modals
+        const checkoutModal = document.getElementById('checkout-modal');
+        if (checkoutModal) checkoutModal.style.display = 'none';
+        const lookupModal = document.getElementById('order-lookup-modal');
+        if (lookupModal) lookupModal.style.display = 'none';
+        const reviewModal = document.getElementById('review-modal');
+        if (reviewModal) reviewModal.style.display = 'none';
+        if (window.cartManager) window.cartManager.closeCart();
+      }
     });
   }
 
@@ -74,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
         this.speedX = Math.random() * 0.3 - 0.15;
         this.speedY = Math.random() * 0.3 - 0.15;
         const isPurple = Math.random() > 0.6;
-        this.color = isPurple ? 'rgba(189, 0, 255, 0.35)' : 'rgba(0, 240, 255, 0.35)';
+        this.color = isPurple ? 'rgba(139, 92, 246, 0.25)' : 'rgba(59, 130, 246, 0.25)';
       }
 
       update() {
@@ -106,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const initParticles = () => {
       particles = [];
-      const count = Math.min(window.innerWidth / 20, 60);
+      const count = Math.min(window.innerWidth / 25, 45);
       for (let i = 0; i < count; i++) {
         particles.push(new Particle());
       }
@@ -147,6 +175,78 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // --- INTERACTIVE VOICE PROMPTS & SOUNDWAVE RESPONSES ---
+  const promptButtons = document.querySelectorAll('.btn-prompt');
+  const chatMessages = document.getElementById('chat-messages');
+  const soundwaveBars = document.querySelectorAll('.soundwave-bar');
+
+  const voiceResponses = {
+    love: {
+      userText: 'iPet có yêu mình không?',
+      botText: 'Bíp! Yêu bạn nhiều lắm luôn! Mỗi lần bạn làm việc, có mình ở cạnh làm bạn nhé! ❤️',
+      emotion: 'Happy'
+    },
+    joke: {
+      userText: 'Kể chuyện cười đi!',
+      botText: 'Hôm nay có chú bug trốn trong code của bạn, nhưng em đã dùng bánh Mecanum drift bay nó đi rồi! Haha 😆',
+      emotion: 'Laugh'
+    },
+    dance: {
+      userText: 'Bật nhạc nhảy nhót nào!',
+      botText: 'Đã sẵn sàng! 4 bánh Mecanum đang kích hoạt chế độ drift 360 độ theo điệu nhạc! 🎵',
+      emotion: 'Game'
+    },
+    sleep: {
+      userText: 'Đi ngủ thôi iPet.',
+      botText: 'Oáp... Em cũng buồn ngủ rồi. Chúc bạn ngủ ngon, mai lại cùng vui chơi nhé! 💤',
+      emotion: 'Tired'
+    }
+  };
+
+  if (promptButtons.length > 0 && chatMessages) {
+    promptButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const promptKey = btn.getAttribute('data-prompt');
+        const data = voiceResponses[promptKey];
+        if (!data) return;
+
+        // Animate soundwaves
+        soundwaveBars.forEach(bar => {
+          bar.style.animationDuration = '0.4s';
+        });
+
+        // Add user and bot bubbles
+        chatMessages.innerHTML = `
+          <div class="chat-bubble" style="align-items: flex-end; margin-bottom: 0.65rem;">
+            <div class="bubble-sender" style="color: var(--text-muted); font-size: 0.75rem;">Bạn</div>
+            <div class="bubble-content" style="background: var(--primary-light); border-color: var(--border-glow-blue); font-size: 0.88rem;">
+              "${data.userText}"
+            </div>
+          </div>
+          <div class="chat-bubble bot">
+            <div class="bubble-sender"><i data-lucide="bot"></i> iPet</div>
+            <div class="bubble-content">
+              ${data.botText}
+            </div>
+          </div>
+        `;
+
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+
+        // Switch emotion if emotionPlayer is active
+        if (window.emotionPlayer && typeof window.emotionPlayer.setEmotion === 'function') {
+          window.emotionPlayer.setEmotion(data.emotion);
+        }
+
+        setTimeout(() => {
+          soundwaveBars.forEach(bar => {
+            bar.style.animationDuration = '1.2s';
+          });
+        }, 1500);
+      });
+    });
+  }
+
   // --- REVIEW SUBMISSION MODAL ---
   const btnOpenReviewModal = document.getElementById('btn-open-review-modal');
   const reviewModal = document.getElementById('review-modal');
@@ -182,15 +282,4 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
-
-  // Auto eye blinking
-  setInterval(() => {
-    const robotContainer = document.querySelector('.robot-container');
-    if (robotContainer) {
-      robotContainer.classList.add('blinking');
-      setTimeout(() => {
-        robotContainer.classList.remove('blinking');
-      }, 250);
-    }
-  }, 5000);
 });
