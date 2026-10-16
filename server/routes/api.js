@@ -1,5 +1,6 @@
 /**
  * iPet Public Client API Routes
+ * Hardened endpoints with rate limiting, atomic order transactions, and input sanitization.
  */
 
 const express = require('express');
@@ -9,7 +10,8 @@ const { getDb } = require('../db/database');
 const { PRODUCT_DATA, calculateOrderPricing } = require('../services/pricing');
 const { validateCheckoutData } = require('../services/validation');
 const { generateVietQR } = require('../services/vietqr');
-const { ORDER_STATES, transitionOrder } = require('../services/orderStateMachine');
+const { ORDER_STATES } = require('../services/orderStateMachine');
+const { orderLimiter, reviewLimiter, surveyLimiter } = require('../middleware/rateLimiter');
 
 /**
  * GET /api/product
@@ -41,7 +43,8 @@ router.get('/product', (req, res) => {
       }
     });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error('[API /product Error]:', err);
+    res.status(500).json({ success: false, error: 'Không thể nạp thông tin sản phẩm' });
   }
 });
 
@@ -79,7 +82,7 @@ router.post('/pricing/calculate', (req, res) => {
 
     res.json({ success: true, data: pricing });
   } catch (err) {
-    res.status(400).json({ success: false, error: err.message });
+    res.status(400).json({ success: false, error: err.message || 'Lỗi tính giá đơn hàng' });
   }
 });
 
@@ -123,15 +126,17 @@ router.post('/coupons/validate', (req, res) => {
       }
     });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error('[API /coupons/validate Error]:', err);
+    res.status(500).json({ success: false, error: 'Lỗi kiểm tra mã giảm giá' });
   }
 });
 
 /**
  * POST /api/orders
- * Create a new order with validation, inventory reservation, and payment generation
+ * Create a new order with atomic transaction, inventory reservation, and payment generation
+ * Rate limited via orderLimiter
  */
-router.post('/orders', (req, res) => {
+router.post('/orders', orderLimiter, (req, res) => {
   try {
     const validation = validateCheckoutData(req.body);
     if (!validation.isValid) {
@@ -145,145 +150,163 @@ router.post('/orders', (req, res) => {
     const { sanitizedData } = validation;
     const db = getDb();
 
-    // Check inventory
-    const invRow = db.prepare('SELECT stock_count FROM inventory WHERE variant_id = ?').get(sanitizedData.variant);
-    if (!invRow || invRow.stock_count < sanitizedData.quantity) {
-      return res.status(400).json({
-        success: false,
-        error: 'Phiên bản robot được chọn hiện đang tạm hết hàng, vui lòng thử lại sau.'
+    // Execute order creation within a safe atomic transaction
+    const orderResult = db.transaction(() => {
+      // 1. Check inventory inside transaction
+      const invRow = db.prepare('SELECT stock_count FROM inventory WHERE variant_id = ?').get(sanitizedData.variant);
+      if (!invRow || invRow.stock_count < sanitizedData.quantity) {
+        throw new Error('OUT_OF_STOCK');
+      }
+
+      // 2. Lookup coupon inside transaction
+      let couponObj = null;
+      if (sanitizedData.couponCode) {
+        const cRow = db.prepare('SELECT * FROM coupons WHERE code = ? AND is_active = 1').get(sanitizedData.couponCode);
+        if (cRow && cRow.uses_count < cRow.max_uses) {
+          couponObj = {
+            code: cRow.code,
+            type: cRow.type,
+            value: cRow.value,
+            minOrder: cRow.min_order
+          };
+        }
+      }
+
+      // 3. Authoritative pricing calculation
+      const pricing = calculateOrderPricing({
+        variant: sanitizedData.variant,
+        color: sanitizedData.color,
+        quantity: sanitizedData.quantity,
+        addons: sanitizedData.addons,
+        coupon: couponObj,
+        paymentMethod: sanitizedData.paymentMethod
       });
-    }
 
-    // Lookup coupon if any
-    let couponObj = null;
-    if (sanitizedData.couponCode) {
-      const cRow = db.prepare('SELECT * FROM coupons WHERE code = ? AND is_active = 1').get(sanitizedData.couponCode);
-      if (cRow && cRow.uses_count < cRow.max_uses) {
-        couponObj = {
-          code: cRow.code,
-          type: cRow.type,
-          value: cRow.value,
-          minOrder: cRow.min_order
-        };
+      // 4. Generate unique Order Code: IPET-[6 random uppercase/digits]
+      const orderId = `IPET-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
+      
+      // COD orders start as PENDING (NOT PAID!), VietQR as PAYMENT_PENDING
+      const isVietQR = sanitizedData.paymentMethod === 'vietqr';
+      const initialStatus = isVietQR ? ORDER_STATES.PAYMENT_PENDING : ORDER_STATES.PENDING;
+      const paymentStatus = isVietQR ? 'UNPAID' : 'COD_PENDING';
+      const now = new Date().toISOString();
+
+      const auditLog = [
+        {
+          timestamp: now,
+          from: 'NONE',
+          to: initialStatus,
+          reason: `Khách hàng tạo đơn hàng qua phương thức ${sanitizedData.paymentMethod.toUpperCase()}`
+        }
+      ];
+
+      // 5. Insert order into DB
+      const insertStmt = db.prepare(`
+        INSERT INTO orders (
+          id, status, customer_name, customer_phone, customer_email,
+          province, district, ward, address, note,
+          variant_id, variant_name, color, quantity, addons_json,
+          subtotal, shipping_fee, discount_amount, total_amount,
+          payment_method, payment_status, tracking_number, audit_log_json,
+          created_at, updated_at
+        ) VALUES (
+          ?, ?, ?, ?, ?,
+          ?, ?, ?, ?, ?,
+          ?, ?, ?, ?, ?,
+          ?, ?, ?, ?,
+          ?, ?, ?, ?,
+          ?, ?
+        )
+      `);
+
+      insertStmt.run(
+        orderId,
+        initialStatus,
+        sanitizedData.fullName,
+        sanitizedData.phone,
+        sanitizedData.email,
+        sanitizedData.province,
+        sanitizedData.district,
+        sanitizedData.ward,
+        sanitizedData.address,
+        sanitizedData.note,
+        pricing.variant.id,
+        pricing.variant.name,
+        pricing.color,
+        pricing.quantity,
+        JSON.stringify(pricing.addons),
+        pricing.subtotal,
+        pricing.shippingFee,
+        pricing.discountAmount,
+        pricing.total,
+        sanitizedData.paymentMethod,
+        paymentStatus,
+        '',
+        JSON.stringify(auditLog),
+        now,
+        now
+      );
+
+      // 6. Deduct inventory atomically
+      db.prepare('UPDATE inventory SET stock_count = stock_count - ?, updated_at = ? WHERE variant_id = ?')
+        .run(sanitizedData.quantity, now, sanitizedData.variant);
+
+      // 7. Increment coupon use if applied
+      if (pricing.appliedCoupon) {
+        db.prepare('UPDATE coupons SET uses_count = uses_count + 1 WHERE code = ?')
+          .run(pricing.appliedCoupon.code);
       }
-    }
 
-    // Authoritative pricing calculation
-    const pricing = calculateOrderPricing({
-      variant: sanitizedData.variant,
-      color: sanitizedData.color,
-      quantity: sanitizedData.quantity,
-      addons: sanitizedData.addons,
-      coupon: couponObj,
-      paymentMethod: sanitizedData.paymentMethod
+      return {
+        orderId,
+        initialStatus,
+        paymentStatus,
+        pricing,
+        now
+      };
     });
-
-    // Generate unique Order Code: IPET-[4 random uppercase/digits]
-    const orderId = `IPET-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
-    const initialStatus = sanitizedData.paymentMethod === 'vietqr' ? ORDER_STATES.PAYMENT_PENDING : ORDER_STATES.PAID;
-    const paymentStatus = sanitizedData.paymentMethod === 'vietqr' ? 'UNPAID' : 'COD_PENDING';
-    const now = new Date().toISOString();
-
-    const auditLog = [
-      {
-        timestamp: now,
-        from: 'NONE',
-        to: initialStatus,
-        reason: `Khách hàng tạo đơn hàng qua phương thức ${sanitizedData.paymentMethod.toUpperCase()}`
-      }
-    ];
-
-    // Insert order into DB
-    const insertStmt = db.prepare(`
-      INSERT INTO orders (
-        id, status, customer_name, customer_phone, customer_email,
-        province, district, ward, address, note,
-        variant_id, variant_name, color, quantity, addons_json,
-        subtotal, shipping_fee, discount_amount, total_amount,
-        payment_method, payment_status, tracking_number, audit_log_json,
-        created_at, updated_at
-      ) VALUES (
-        ?, ?, ?, ?, ?,
-        ?, ?, ?, ?, ?,
-        ?, ?, ?, ?, ?,
-        ?, ?, ?, ?,
-        ?, ?, ?, ?,
-        ?, ?
-      )
-    `);
-
-    insertStmt.run(
-      orderId,
-      initialStatus,
-      sanitizedData.fullName,
-      sanitizedData.phone,
-      sanitizedData.email,
-      sanitizedData.province,
-      sanitizedData.district,
-      sanitizedData.ward,
-      sanitizedData.address,
-      sanitizedData.note,
-      pricing.variant.id,
-      pricing.variant.name,
-      pricing.color,
-      pricing.quantity,
-      JSON.stringify(pricing.addons),
-      pricing.subtotal,
-      pricing.shippingFee,
-      pricing.discountAmount,
-      pricing.total,
-      sanitizedData.paymentMethod,
-      paymentStatus,
-      '',
-      JSON.stringify(auditLog),
-      now,
-      now
-    );
-
-    // Deduct inventory
-    db.prepare('UPDATE inventory SET stock_count = stock_count - ?, updated_at = ? WHERE variant_id = ?')
-      .run(sanitizedData.quantity, now, sanitizedData.variant);
-
-    // Increment coupon use if applied
-    if (pricing.appliedCoupon) {
-      db.prepare('UPDATE coupons SET uses_count = uses_count + 1 WHERE code = ?')
-        .run(pricing.appliedCoupon.code);
-    }
 
     // Generate VietQR details if applicable
     let vietqrData = null;
     if (sanitizedData.paymentMethod === 'vietqr') {
       vietqrData = generateVietQR({
-        orderCode: orderId,
-        amount: pricing.total
+        orderCode: orderResult.orderId,
+        amount: orderResult.pricing.total
       });
     }
 
     res.json({
       success: true,
       data: {
-        orderId,
-        status: initialStatus,
+        orderId: orderResult.orderId,
+        status: orderResult.initialStatus,
         paymentMethod: sanitizedData.paymentMethod,
-        paymentStatus,
-        pricing,
+        paymentStatus: orderResult.paymentStatus,
+        pricing: orderResult.pricing,
         customer: {
           fullName: sanitizedData.fullName,
           phone: sanitizedData.phone,
           address: `${sanitizedData.address}, ${sanitizedData.ward}, ${sanitizedData.district}, ${sanitizedData.province}`
         },
         vietqr: vietqrData,
-        createdAt: now
+        createdAt: orderResult.now
       }
     });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    if (err.message === 'OUT_OF_STOCK') {
+      return res.status(400).json({
+        success: false,
+        error: 'Phiên bản robot được chọn hiện đang tạm hết hàng, vui lòng thử lại sau.'
+      });
+    }
+    console.error('[API /orders Error]:', err);
+    res.status(500).json({ success: false, error: 'Không thể tạo đơn hàng, vui lòng thử lại' });
   }
 });
 
 /**
  * GET /api/orders/:id
- * Lookup order status by ID
+ * Lookup order status by ID (with privacy masking on phone)
  */
 router.get('/orders/:id', (req, res) => {
   try {
@@ -320,7 +343,8 @@ router.get('/orders/:id', (req, res) => {
       }
     });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error('[API /orders/:id Error]:', err);
+    res.status(500).json({ success: false, error: 'Lỗi tra cứu đơn hàng' });
   }
 });
 
@@ -352,15 +376,16 @@ router.get('/reviews', (req, res) => {
       }
     });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error('[API /reviews Error]:', err);
+    res.status(500).json({ success: false, error: 'Không thể nạp danh sách đánh giá' });
   }
 });
 
 /**
  * POST /api/reviews
- * Submit a customer review (queued for admin moderation)
+ * Submit a customer review (rate limited)
  */
-router.post('/reviews', (req, res) => {
+router.post('/reviews', reviewLimiter, (req, res) => {
   try {
     const { authorName, rating, content, variant } = req.body;
     if (!authorName || !content || !rating) {
@@ -371,18 +396,17 @@ router.post('/reviews', (req, res) => {
     const now = new Date().toISOString();
     const db = getDb();
 
-    // Insert as approved or pending
     const stmt = db.prepare(`
       INSERT INTO reviews (author_name, rating, content, variant, is_verified, is_approved, created_at)
       VALUES (?, ?, ?, ?, ?, ?, ?)
     `);
     const result = stmt.run(
-      authorName.trim().slice(0, 60),
+      String(authorName).trim().slice(0, 60),
       validRating,
-      content.trim().slice(0, 1000),
-      (variant || 'iPet Standard').slice(0, 50),
+      String(content).trim().slice(0, 1000),
+      String(variant || 'iPet Standard').slice(0, 50),
       1,
-      1, // Approved for instant feedback
+      1, // Approved for transparent feedback
       now
     );
 
@@ -392,15 +416,16 @@ router.post('/reviews', (req, res) => {
       reviewId: result.lastInsertRowid
     });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error('[API /reviews POST Error]:', err);
+    res.status(500).json({ success: false, error: 'Lỗi ghi nhận đánh giá' });
   }
 });
 
 /**
  * POST /api/survey
- * Receive customer survey & feature suggestion
+ * Receive customer survey & feature suggestion (rate limited)
  */
-router.post('/survey', (req, res) => {
+router.post('/survey', surveyLimiter, (req, res) => {
   try {
     const { customerName, phoneOrEmail, featureWish, useCase, targetPrice, suggestions } = req.body;
     const now = new Date().toISOString();
@@ -412,12 +437,12 @@ router.post('/survey', (req, res) => {
     `);
 
     stmt.run(
-      (customerName || 'Ẩn danh').trim().slice(0, 80),
-      (phoneOrEmail || '').trim().slice(0, 100),
-      (featureWish || '').slice(0, 200),
-      (useCase || '').slice(0, 200),
-      (targetPrice || '').slice(0, 50),
-      (suggestions || '').trim().slice(0, 2000),
+      String(customerName || 'Ẩn danh').trim().slice(0, 80),
+      String(phoneOrEmail || '').trim().slice(0, 100),
+      String(featureWish || '').slice(0, 200),
+      String(useCase || '').slice(0, 200),
+      String(targetPrice || '').slice(0, 50),
+      String(suggestions || '').trim().slice(0, 2000),
       now
     );
 
@@ -426,7 +451,8 @@ router.post('/survey', (req, res) => {
       message: 'Cảm ơn bạn đã tham gia khảo sát & đóng góp ý kiến phát triển iPet!'
     });
   } catch (err) {
-    res.status(500).json({ success: false, error: err.message });
+    console.error('[API /survey Error]:', err);
+    res.status(500).json({ success: false, error: 'Lỗi gửi khảo sát' });
   }
 });
 

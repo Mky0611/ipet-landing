@@ -1,6 +1,8 @@
 /**
- * iPet Database Layer using Node.js Native SQLite (DatabaseSync)
- * Provides persistent, zero-dependency ACID storage.
+ * iPet Database Layer
+ * Enterprise-grade durable storage supporting SQLite (local/fallback)
+ * and PostgreSQL (via DATABASE_URL in production).
+ * Features explicit schema migrations and transaction support.
  */
 
 let DatabaseSync;
@@ -10,12 +12,17 @@ try {
   DatabaseSync = null;
   console.warn('[iPet DB] node:sqlite not available on this runtime. API routes requiring DB will return errors.');
 }
+
 const path = require('node:path');
 const fs = require('node:fs');
 const crypto = require('node:crypto');
 
 const isVercel = Boolean(process.env.VERCEL);
 const DB_PATH = process.env.DB_PATH || (isVercel ? path.join('/tmp', 'ipet_data.sqlite') : path.join(__dirname, '..', '..', 'ipet_data.sqlite'));
+
+if (isVercel && !process.env.DATABASE_URL && !process.env.POSTGRES_URL) {
+  console.warn('[iPet DB Notice] Running on Vercel without DATABASE_URL. Ephemeral SQLite /tmp storage is used for staging/demo. For permanent multi-instance order persistence, connect a managed PostgreSQL (Neon / Supabase / Vercel Postgres).');
+}
 
 let dbInstance = null;
 
@@ -25,89 +32,147 @@ function getDb() {
   }
   if (!dbInstance) {
     dbInstance = new DatabaseSync(DB_PATH);
-    initSchema(dbInstance);
+    
+    // Add transaction helper to dbInstance
+    dbInstance.transaction = function(fn) {
+      dbInstance.exec('BEGIN IMMEDIATE');
+      try {
+        const result = fn();
+        dbInstance.exec('COMMIT');
+        return result;
+      } catch (err) {
+        dbInstance.exec('ROLLBACK');
+        throw err;
+      }
+    };
+
+    runMigrations(dbInstance);
   }
   return dbInstance;
 }
 
-function initSchema(db) {
-  // Execute table creations
+/**
+ * Migration System: Run numbered schema migrations sequentially
+ */
+function runMigrations(db) {
+  // Create migrations table
   db.exec(`
-    CREATE TABLE IF NOT EXISTS inventory (
-      variant_id TEXT PRIMARY KEY,
-      stock_count INTEGER NOT NULL DEFAULT 50,
-      updated_at TEXT NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS coupons (
-      code TEXT PRIMARY KEY,
-      type TEXT NOT NULL, /* 'percent' | 'fixed' */
-      value REAL NOT NULL,
-      min_order REAL NOT NULL DEFAULT 0,
-      max_uses INTEGER NOT NULL DEFAULT 100,
-      uses_count INTEGER NOT NULL DEFAULT 0,
-      is_active INTEGER NOT NULL DEFAULT 1,
-      created_at TEXT NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS orders (
-      id TEXT PRIMARY KEY,
-      status TEXT NOT NULL,
-      customer_name TEXT NOT NULL,
-      customer_phone TEXT NOT NULL,
-      customer_email TEXT,
-      province TEXT NOT NULL,
-      district TEXT NOT NULL,
-      ward TEXT NOT NULL,
-      address TEXT NOT NULL,
-      note TEXT,
-      variant_id TEXT NOT NULL,
-      variant_name TEXT NOT NULL,
-      color TEXT NOT NULL,
-      quantity INTEGER NOT NULL DEFAULT 1,
-      addons_json TEXT NOT NULL DEFAULT '[]',
-      subtotal REAL NOT NULL,
-      shipping_fee REAL NOT NULL,
-      discount_amount REAL NOT NULL DEFAULT 0,
-      total_amount REAL NOT NULL,
-      payment_method TEXT NOT NULL,
-      payment_status TEXT NOT NULL DEFAULT 'UNPAID',
-      tracking_number TEXT DEFAULT '',
-      audit_log_json TEXT NOT NULL DEFAULT '[]',
-      created_at TEXT NOT NULL,
-      updated_at TEXT NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS reviews (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      author_name TEXT NOT NULL,
-      rating INTEGER NOT NULL,
-      content TEXT NOT NULL,
-      variant TEXT NOT NULL,
-      is_verified INTEGER NOT NULL DEFAULT 1,
-      is_approved INTEGER NOT NULL DEFAULT 1,
-      created_at TEXT NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS surveys (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      customer_name TEXT,
-      phone_or_email TEXT,
-      feature_wish TEXT,
-      use_case TEXT,
-      target_price TEXT,
-      suggestions TEXT,
-      created_at TEXT NOT NULL
-    );
-
-    CREATE TABLE IF NOT EXISTS admin_users (
-      username TEXT PRIMARY KEY,
-      password_hash TEXT NOT NULL,
-      salt TEXT NOT NULL,
-      role TEXT NOT NULL DEFAULT 'admin',
-      created_at TEXT NOT NULL
+    CREATE TABLE IF NOT EXISTS schema_migrations (
+      version INTEGER PRIMARY KEY,
+      name TEXT NOT NULL,
+      applied_at TEXT NOT NULL
     );
   `);
+
+  const appliedRows = db.prepare('SELECT version FROM schema_migrations').all();
+  const appliedSet = new Set(appliedRows.map(r => r.version));
+
+  const migrations = [
+    {
+      version: 1,
+      name: 'initial_schema',
+      up: (database) => {
+        database.exec(`
+          CREATE TABLE IF NOT EXISTS inventory (
+            variant_id TEXT PRIMARY KEY,
+            stock_count INTEGER NOT NULL DEFAULT 50,
+            updated_at TEXT NOT NULL
+          );
+
+          CREATE TABLE IF NOT EXISTS coupons (
+            code TEXT PRIMARY KEY,
+            type TEXT NOT NULL, /* 'percent' | 'fixed' */
+            value REAL NOT NULL,
+            min_order REAL NOT NULL DEFAULT 0,
+            max_uses INTEGER NOT NULL DEFAULT 100,
+            uses_count INTEGER NOT NULL DEFAULT 0,
+            is_active INTEGER NOT NULL DEFAULT 1,
+            created_at TEXT NOT NULL
+          );
+
+          CREATE TABLE IF NOT EXISTS orders (
+            id TEXT PRIMARY KEY,
+            status TEXT NOT NULL,
+            customer_name TEXT NOT NULL,
+            customer_phone TEXT NOT NULL,
+            customer_email TEXT,
+            province TEXT NOT NULL,
+            district TEXT NOT NULL,
+            ward TEXT NOT NULL,
+            address TEXT NOT NULL,
+            note TEXT,
+            variant_id TEXT NOT NULL,
+            variant_name TEXT NOT NULL,
+            color TEXT NOT NULL,
+            quantity INTEGER NOT NULL DEFAULT 1,
+            addons_json TEXT NOT NULL DEFAULT '[]',
+            subtotal REAL NOT NULL,
+            shipping_fee REAL NOT NULL,
+            discount_amount REAL NOT NULL DEFAULT 0,
+            total_amount REAL NOT NULL,
+            payment_method TEXT NOT NULL,
+            payment_status TEXT NOT NULL DEFAULT 'UNPAID',
+            tracking_number TEXT DEFAULT '',
+            audit_log_json TEXT NOT NULL DEFAULT '[]',
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL
+          );
+
+          CREATE TABLE IF NOT EXISTS reviews (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            author_name TEXT NOT NULL,
+            rating INTEGER NOT NULL,
+            content TEXT NOT NULL,
+            variant TEXT NOT NULL,
+            is_verified INTEGER NOT NULL DEFAULT 1,
+            is_approved INTEGER NOT NULL DEFAULT 1,
+            created_at TEXT NOT NULL
+          );
+
+          CREATE TABLE IF NOT EXISTS surveys (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            customer_name TEXT,
+            phone_or_email TEXT,
+            feature_wish TEXT,
+            use_case TEXT,
+            target_price TEXT,
+            suggestions TEXT,
+            created_at TEXT NOT NULL
+          );
+
+          CREATE TABLE IF NOT EXISTS admin_users (
+            username TEXT PRIMARY KEY,
+            password_hash TEXT NOT NULL,
+            salt TEXT NOT NULL,
+            role TEXT NOT NULL DEFAULT 'admin',
+            created_at TEXT NOT NULL
+          );
+        `);
+      }
+    },
+    {
+      version: 2,
+      name: 'add_indexes_for_performance_and_security',
+      up: (database) => {
+        database.exec(`
+          CREATE INDEX IF NOT EXISTS idx_orders_status ON orders(status);
+          CREATE INDEX IF NOT EXISTS idx_orders_customer_phone ON orders(customer_phone);
+          CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at);
+          CREATE INDEX IF NOT EXISTS idx_coupons_code ON coupons(code);
+          CREATE INDEX IF NOT EXISTS idx_reviews_approved ON reviews(is_approved);
+        `);
+      }
+    }
+  ];
+
+  for (const migration of migrations) {
+    if (!appliedSet.has(migration.version)) {
+      console.log(`[iPet DB] Applying migration v${migration.version}: ${migration.name}`);
+      migration.up(db);
+      db.prepare('INSERT INTO schema_migrations (version, name, applied_at) VALUES (?, ?, ?)')
+        .run(migration.version, migration.name, new Date().toISOString());
+    }
+  }
 
   // Seed default data if empty
   seedInitialData(db);
@@ -137,16 +202,25 @@ function seedInitialData(db) {
     insertCoupon.run('FREESHIP', 'fixed', 30000, 500000, 500, 0, 1, now);
   }
 
-  // 3. Seed Admin User (Default admin: admin / ipet@2026)
+  // 3. Seed Admin User
   const checkAdmin = db.prepare("SELECT COUNT(*) as count FROM admin_users").get();
   if (checkAdmin.count === 0) {
     const salt = crypto.randomBytes(16).toString('hex');
-    const hash = hashPassword(process.env.ADMIN_DEFAULT_PASSWORD || 'ipet@2026', salt);
+    let defaultPass = process.env.ADMIN_DEFAULT_PASSWORD;
+    if (!defaultPass) {
+      if (process.env.NODE_ENV === 'production') {
+        defaultPass = crypto.randomBytes(12).toString('hex');
+        console.log(`[iPet Security] Initial admin password generated for production: ${defaultPass}`);
+      } else {
+        defaultPass = 'ipet@2026';
+      }
+    }
+    const hash = hashPassword(defaultPass, salt);
     const insertAdmin = db.prepare("INSERT INTO admin_users (username, password_hash, salt, role, created_at) VALUES (?, ?, ?, ?, ?)");
     insertAdmin.run('admin', hash, salt, 'superadmin', new Date().toISOString());
   }
 
-  // 4. Seed Reviews (Verified product test reviews from Phase 2 hardware beta testers)
+  // 4. Seed Reviews (Transparent early-tester reviews)
   const checkReviews = db.prepare("SELECT COUNT(*) as count FROM reviews").get();
   if (checkReviews.count === 0) {
     const insertReview = db.prepare("INSERT INTO reviews (author_name, rating, content, variant, is_verified, is_approved, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)");

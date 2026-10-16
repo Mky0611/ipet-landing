@@ -9,23 +9,23 @@
     content="iPet là robot thú cưng để bàn dáng xe thể thao tích hợp ESP32-S3, màn hình LCD màu thể hiện 7 bộ cảm xúc chân thực, cảm biến chạm điện dung, bánh xe Mecanum drift 360° và Edge AI offline bảo mật.">
   <meta name="keywords"
     content="iPet, robot AI, robot de ban, robot xe, ESP32, mecanum wheel, smart pet, robot cam xuc">
-  <link rel="canonical" href="https://ipet.vn/">
+  <link rel="canonical" href="https://ipet-landing-psi.vercel.app/">
   <link rel="icon" type="image/png" href="/assets/images/logo.png">
 
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="product">
-  <meta property="og:url" content="https://ipet.vn/">
+  <meta property="og:url" content="https://ipet-landing-psi.vercel.app/">
   <meta property="og:title" content="iPet — Robot AI Để Bàn Dáng Xe Đua | Biểu Cảm Sống Động Thật">
   <meta property="og:description"
     content="Người bạn robot để bàn dáng xe rover tương tác cảm xúc qua màn hình LCD màu, bánh xe Mecanum drift đa hướng và vi xử lý ESP32-S3 offline.">
-  <meta property="og:image" content="https://ipet.vn/assets/images/ipet-3d-car-master.jpg">
+  <meta property="og:image" content="https://ipet-landing-psi.vercel.app/assets/images/ipet-3d-car-master.jpg">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="iPet — Robot AI Để Bàn Dáng Xe Đua">
   <meta name="twitter:description"
     content="Người bạn robot để bàn dáng xe rover với 7 bộ cảm xúc LCD, bánh Mecanum drift 360 độ và AI cục bộ offline.">
-  <meta name="twitter:image" content="https://ipet.vn/assets/images/ipet-3d-car-master.jpg">
+  <meta name="twitter:image" content="https://ipet-landing-psi.vercel.app/assets/images/ipet-3d-car-master.jpg">
 
   <!-- JSON-LD Structured Data for SEO -->
   <script type="application/ld+json">
@@ -33,15 +33,16 @@
     "@context": "https://schema.org/",
     "@type": "Product",
     "name": "iPet Desktop AI Robot Car",
-    "image": "https://ipet.vn/assets/images/ipet-3d-car-master.jpg",
+    "image": "https://ipet-landing-psi.vercel.app/assets/images/ipet-3d-car-master.jpg",
     "description": "Robot thú cưng để bàn dáng xe thể thao tích hợp ESP32-S3, màn hình LCD màu thể hiện 7 bộ cảm xúc chân thực, bánh xe Mecanum 360°.",
     "brand": {
       "@type": "Brand",
       "name": "iPet Robotics"
     },
+    "category": "Robotics / STEM Desktop Companions",
     "offers": {
       "@type": "Offer",
-      "url": "https://ipet.vn/#configurator",
+      "url": "https://ipet-landing-psi.vercel.app/#configurator",
       "priceCurrency": "VND",
       "price": "1490000",
       "priceValidUntil": "2026-12-31",
@@ -74,7 +75,7 @@
   <header class="site-header" role="banner">
     <div class="container header-inner">
       <!-- Brand Logo -->
-      <a href="#" class="logo-link" aria-label="iPet Trang Chủ">
+      <a href="#hero" class="logo-link" aria-label="iPet Trang Chủ">
         <div class="logo-badge">
           <img src="/assets/images/logo.png" alt="iPet Logo" class="logo-img">
         </div>
@@ -147,8 +148,12 @@
       <div class="container hero-grid">
         <!-- Hero Left: Headline, Value Proposition, Action CTAs -->
         <div class="hero-content">
+          <div class="prototype-banner fade-in">
+            <span class="banner-dot"></span>
+            <span>Nguyên mẫu kỹ thuật đang phát triển (Hardware Prototype Status) • Dự kiến giao Q4/2026</span>
+          </div>
           <div class="badge fade-in">
-            <span class="badge-dot"></span> Đợt Đặt Trước Giới Hạn • Giao Hàng Q4/2026
+            <span class="badge-dot"></span> Đợt Đặt Trước Giai Đoạn 1 • Giới Hạn 50 Suất
           </div>
           <h1 class="hero-title fade-in-delay-1">
             iPet — Robot Nhỏ. <br>
@@ -359,19 +364,22 @@
           <p class="sec-subtitle">Khám phá chi tiết cấu tạo cơ khí và sơ đồ nguyên lý mạch điện tử điều khiển robot iPet.</p>
         </div>
 
-        <!-- 4 Gallery Tabs -->
+        <!-- 5 Hardware & CAD Gallery Tabs -->
         <div class="gallery-nav-tabs">
-          <button class="btn-gallery-tab active" data-tab="car_master">
+          <button class="btn-gallery-tab active" data-tab="car_master" data-gallery="car_master">
             <i data-lucide="layers"></i> Mô Hình 3D Chuẩn
           </button>
-          <button class="btn-gallery-tab" data-tab="schematic">
+          <button class="btn-gallery-tab" data-tab="schematic" data-gallery="schematic">
             <i data-lucide="cpu"></i> Sơ Đồ Mạch Điện
           </button>
-          <button class="btn-gallery-tab" data-tab="topshell">
-            <i data-lucide="box"></i> CAD Vỏ Trên Khí Động Học
+          <button class="btn-gallery-tab" data-tab="interior" data-gallery="interior">
+            <i data-lucide="layout-grid"></i> CAD Nội Thất
           </button>
-          <button class="btn-gallery-tab" data-tab="chassis">
-            <i data-lucide="shield"></i> CAD Khung Gầm Đáy
+          <button class="btn-gallery-tab" data-tab="topshell" data-gallery="topshell">
+            <i data-lucide="box"></i> CAD Vỏ Trên
+          </button>
+          <button class="btn-gallery-tab" data-tab="chassis" data-gallery="chassis">
+            <i data-lucide="shield"></i> CAD Khung Gầm
           </button>
         </div>
 
@@ -833,7 +841,7 @@
   <footer class="footer" role="contentinfo">
     <div class="container footer-grid">
       <div class="footer-brand">
-        <a href="#" class="logo-link" style="margin-bottom: 1rem;">
+        <a href="#hero" class="logo-link" style="margin-bottom: 1rem;">
           <div class="logo-badge">
             <img src="/assets/images/logo.png" alt="iPet Logo" class="logo-img">
           </div>
@@ -841,9 +849,15 @@
         </a>
         <p>Smart Pet. Real Connection. Robot thú cưng để bàn dáng xe thể thao tích hợp trí tuệ nhân tạo và tương tác cơ điện tử cảm xúc.</p>
         <div class="social-links">
-          <a href="https://github.com/Mky0611/ipet-landing" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i data-lucide="github"></i></a>
-          <a href="#" aria-label="Facebook"><i data-lucide="facebook"></i></a>
-          <a href="#" aria-label="Youtube"><i data-lucide="youtube"></i></a>
+          <a href="https://github.com/Mky0611/ipet-landing" target="_blank" rel="noopener noreferrer" aria-label="GitHub Repository">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"></path><path d="M9 18c-4.51 2-5-2-7-2"></path></svg>
+          </a>
+          <a href="https://www.facebook.com/profile.php?id=61594612043611" target="_blank" rel="noopener noreferrer" aria-label="Theo dõi iPet trên Facebook">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+          </a>
+          <a href="https://www.youtube.com/@iPetRobotics" target="_blank" rel="noopener noreferrer" aria-label="Kênh YouTube iPet">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path><path d="m10 15 5-3-5-3v6Z"></path></svg>
+          </a>
         </div>
       </div>
 

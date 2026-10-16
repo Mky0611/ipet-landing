@@ -44,6 +44,16 @@ const GALLERY_DATA = {
       { icon: 'compass', title: 'Trọng tâm hạ thấp', desc: 'Đặt pin 18650 sát đáy giúp xe giữ thăng bằng tuyệt đối' },
       { icon: 'sliders', title: 'Lỗ thoát dây và vít định vị', desc: 'Chuẩn kích thước gia công in 3D và đúc khuôn nhựa' }
     ]
+  },
+  interior: {
+    title: 'Bản Vẽ 3D CAD — Kết Cấu Bố Trí Nội Thất',
+    description: 'Bản vẽ kỹ thuật chi tiết không gian bên trong: cụm giá đỡ màn hình, vị trí đặt vi điều khiển ESP32-S3 và đường dây cảm biến.',
+    image: '/assets/images/ipet-cad-interior.png',
+    specs: [
+      { icon: 'box', title: 'Tối ưu thể tích bên trong', desc: 'Sắp xếp linh kiện module hoá dễ sửa chữa và bảo trì' },
+      { icon: 'cpu', title: 'Đế bắt bo mạch', desc: 'Chân standoff định vị bo mạch chống rung lắc' },
+      { icon: 'shield', title: 'Cách ly nguồn điện', desc: 'Ngăn nhiệt lượng từ pin ảnh hưởng đến chip xử lý' }
+    ]
   }
 };
 
@@ -61,7 +71,7 @@ class HardwareGallery {
   init() {
     document.querySelectorAll('.btn-gallery-tab').forEach(btn => {
       btn.addEventListener('click', () => {
-        const tab = btn.getAttribute('data-gallery');
+        const tab = btn.getAttribute('data-gallery') || btn.getAttribute('data-tab');
         this.switchTab(tab);
       });
     });
@@ -74,7 +84,8 @@ class HardwareGallery {
     this.activeTab = tabKey;
 
     document.querySelectorAll('.btn-gallery-tab').forEach(b => {
-      b.classList.toggle('active', b.getAttribute('data-gallery') === tabKey);
+      const bTab = b.getAttribute('data-gallery') || b.getAttribute('data-tab');
+      b.classList.toggle('active', bTab === tabKey);
     });
 
     this.render();

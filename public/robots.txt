@@ -1,6 +1,9 @@
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /admin/
 Disallow: /api/admin
+Disallow: /api/admin/
+Disallow: /api/
 
-Sitemap: https://ipet.vn/sitemap.xml
+Sitemap: https://ipet-landing-psi.vercel.app/sitemap.xml
