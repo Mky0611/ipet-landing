@@ -75,80 +75,162 @@ document.addEventListener('DOMContentLoaded', () => {
   if (canvas && !prefersReducedMotion) {
     const ctx = canvas.getContext('2d');
     let particles = [];
-    let mouse = { x: null, y: null, radius: 100 };
+    let mouse = { x: null, y: null, radius: 140 };
+    let animationFrameId = null;
+
+    const isLightMode = () => document.documentElement.getAttribute('data-theme') === 'light';
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      initParticles();
     };
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+
+    let resizeTimer;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(resizeCanvas, 150);
+    }, { passive: true });
 
     window.addEventListener('mousemove', (e) => {
-      mouse.x = e.x;
-      mouse.y = e.y;
-    });
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    }, { passive: true });
 
-    window.addEventListener('mouseout', () => {
+    window.addEventListener('mouseleave', () => {
       mouse.x = null;
       mouse.y = null;
     });
 
     class Particle {
       constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 0.5;
-        this.speedX = Math.random() * 0.3 - 0.15;
-        this.speedY = Math.random() * 0.3 - 0.15;
-        const isPurple = Math.random() > 0.6;
-        this.color = isPurple ? 'rgba(139, 92, 246, 0.25)' : 'rgba(59, 130, 246, 0.25)';
+        this.reset(true);
+      }
+
+      reset(initial = false) {
+        this.x = initial ? Math.random() * canvas.width : (Math.random() > 0.5 ? 0 : canvas.width);
+        this.y = initial ? Math.random() * canvas.height : Math.random() * canvas.height;
+        this.radius = Math.random() * 2 + 1;
+        this.baseX = this.x;
+        this.baseY = this.y;
+        this.density = (Math.random() * 20) + 5;
+        this.vx = (Math.random() - 0.5) * 0.45;
+        this.vy = (Math.random() - 0.5) * 0.45;
+        this.isPurple = Math.random() > 0.55;
       }
 
       update() {
-        this.x += this.speedX;
-        this.y += this.speedY;
+        this.x += this.vx;
+        this.y += this.vy;
 
-        if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
-        if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+        // Wrap around viewport edges smoothly
+        if (this.x < -10) this.x = canvas.width + 10;
+        else if (this.x > canvas.width + 10) this.x = -10;
+        if (this.y < -10) this.y = canvas.height + 10;
+        else if (this.y > canvas.height + 10) this.y = -10;
 
-        if (mouse.x != null && mouse.y != null) {
+        // Subtle interactive mouse repulsion
+        if (mouse.x !== null && mouse.y !== null) {
           const dx = mouse.x - this.x;
           const dy = mouse.y - this.y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+          const distance = Math.hypot(dx, dy);
+
           if (distance < mouse.radius) {
-            const force = (mouse.radius - distance) / mouse.radius;
-            this.x -= (dx / distance) * force * 1.5;
-            this.y -= (dy / distance) * force * 1.5;
+            const forceDirectionX = dx / distance;
+            const forceDirectionY = dy / distance;
+            const maxDistance = mouse.radius;
+            const force = (maxDistance - distance) / maxDistance;
+            const directionX = forceDirectionX * force * this.density * 0.12;
+            const directionY = forceDirectionY * force * this.density * 0.12;
+            this.x -= directionX;
+            this.y -= directionY;
           }
         }
       }
 
       draw() {
-        ctx.fillStyle = this.color;
+        const light = isLightMode();
+        let fill;
+        if (light) {
+          fill = this.isPurple ? 'rgba(115, 87, 246, 0.45)' : 'rgba(37, 99, 235, 0.45)';
+        } else {
+          fill = this.isPurple ? 'rgba(167, 139, 250, 0.55)' : 'rgba(56, 189, 248, 0.55)';
+        }
+
+        ctx.fillStyle = fill;
         ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
         ctx.fill();
       }
     }
 
     const initParticles = () => {
       particles = [];
-      const count = Math.min(window.innerWidth / 25, 45);
+      const isMobile = window.innerWidth < 768;
+      const count = isMobile ? Math.min(Math.floor(window.innerWidth / 30), 25) : Math.min(Math.floor(window.innerWidth / 26), 45);
       for (let i = 0; i < count; i++) {
         particles.push(new Particle());
       }
     };
-    initParticles();
+
+    resizeCanvas();
+
+    const connectParticles = () => {
+      const light = isLightMode();
+      const maxDistance = 110;
+      const len = particles.length;
+
+      for (let a = 0; a < len; a++) {
+        for (let b = a + 1; b < len; b++) {
+          const dx = particles[a].x - particles[b].x;
+          const dy = particles[a].y - particles[b].y;
+          const distance = Math.hypot(dx, dy);
+
+          if (distance < maxDistance) {
+            const opacity = (1 - distance / maxDistance) * (light ? 0.16 : 0.22);
+            ctx.strokeStyle = light
+              ? `rgba(37, 99, 235, ${opacity})`
+              : `rgba(56, 189, 248, ${opacity})`;
+            ctx.lineWidth = 0.75;
+            ctx.beginPath();
+            ctx.moveTo(particles[a].x, particles[a].y);
+            ctx.lineTo(particles[b].x, particles[b].y);
+            ctx.stroke();
+          }
+        }
+
+        // Draw soft tether to cursor if in range
+        if (mouse.x !== null && mouse.y !== null) {
+          const mdx = particles[a].x - mouse.x;
+          const mdy = particles[a].y - mouse.y;
+          const mDist = Math.hypot(mdx, mdy);
+          if (mDist < 120) {
+            const mOpacity = (1 - mDist / 120) * (light ? 0.22 : 0.32);
+            ctx.strokeStyle = light
+              ? `rgba(115, 87, 246, ${mOpacity})`
+              : `rgba(167, 139, 250, ${mOpacity})`;
+            ctx.lineWidth = 0.85;
+            ctx.beginPath();
+            ctx.moveTo(particles[a].x, particles[a].y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.stroke();
+          }
+        }
+      }
+    };
 
     const animateParticles = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => {
-        p.update();
-        p.draw();
-      });
-      requestAnimationFrame(animateParticles);
+
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+      }
+
+      connectParticles();
+      animationFrameId = requestAnimationFrame(animateParticles);
     };
+
     animateParticles();
   }
 

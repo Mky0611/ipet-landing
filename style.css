@@ -50,6 +50,13 @@
   --card-shadow-hover: 0 12px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(59, 130, 246, 0.3);
   --modal-backdrop: rgba(3, 7, 18, 0.8);
   --hero-glow-opacity: 0.18;
+  --img-surface-bg: radial-gradient(circle at 50% 45%, #182238 0%, #0D1322 100%);
+  --img-surface-border: rgba(255, 255, 255, 0.08);
+  --grid-dot-color: rgba(59, 130, 246, 0.22);
+  --grid-opacity: 0.65;
+  --ambient-orb-1: rgba(59, 130, 246, 0.16);
+  --ambient-orb-2: rgba(139, 92, 246, 0.14);
+  --ambient-orb-3: rgba(14, 165, 233, 0.12);
 }
 
 :root[data-theme="light"] {
@@ -94,6 +101,13 @@
   --card-shadow-hover: 0 8px 24px rgba(37, 99, 235, 0.08), 0 2px 6px rgba(15, 23, 42, 0.04);
   --modal-backdrop: rgba(15, 23, 42, 0.5);
   --hero-glow-opacity: 0.08;
+  --img-surface-bg: radial-gradient(circle at 50% 40%, #FFFFFF 0%, #EEF2F6 100%);
+  --img-surface-border: #E2E8F0;
+  --grid-dot-color: rgba(37, 99, 235, 0.12);
+  --grid-opacity: 0.45;
+  --ambient-orb-1: rgba(37, 99, 235, 0.07);
+  --ambient-orb-2: rgba(115, 87, 246, 0.05);
+  --ambient-orb-3: rgba(14, 165, 233, 0.05);
 }
 
 /* --------------------------------------------------------------------------
@@ -592,8 +606,88 @@ a {
 }
 
 /* --------------------------------------------------------------------------
-   PARTICLES BACKGROUND CANVAS
+   FUTURISTIC ANIMATED BACKGROUND SYSTEM
    -------------------------------------------------------------------------- */
+.bg-ambient-layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.bg-ambient-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(140px);
+  opacity: 0.9;
+  will-change: transform;
+}
+
+.bg-ambient-orb-1 {
+  width: 650px;
+  height: 650px;
+  top: -120px;
+  right: -100px;
+  background: radial-gradient(circle, var(--ambient-orb-1) 0%, transparent 70%);
+  animation: float-ambient-1 22s ease-in-out infinite alternate;
+}
+
+.bg-ambient-orb-2 {
+  width: 580px;
+  height: 580px;
+  top: 45%;
+  left: -120px;
+  background: radial-gradient(circle, var(--ambient-orb-2) 0%, transparent 70%);
+  animation: float-ambient-2 28s ease-in-out infinite alternate;
+}
+
+.bg-ambient-orb-3 {
+  width: 620px;
+  height: 620px;
+  bottom: -150px;
+  right: 15%;
+  background: radial-gradient(circle, var(--ambient-orb-3) 0%, transparent 70%);
+  animation: float-ambient-3 25s ease-in-out infinite alternate;
+}
+
+@keyframes float-ambient-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-60px, 80px) scale(1.1); }
+  100% { transform: translate(-30px, 40px) scale(0.95); }
+}
+
+@keyframes float-ambient-2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(80px, -60px) scale(1.15); }
+  100% { transform: translate(40px, -30px) scale(0.9); }
+}
+
+@keyframes float-ambient-3 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-50px, -70px) scale(1.08); }
+  100% { transform: translate(20px, -40px) scale(0.95); }
+}
+
+.bg-grid-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: var(--grid-opacity);
+  background-image: radial-gradient(var(--grid-dot-color) 1.25px, transparent 1.25px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(circle at 50% 40%, black 50%, transparent 98%);
+  -webkit-mask-image: radial-gradient(circle at 50% 40%, black 50%, transparent 98%);
+  transition: opacity var(--transition-smooth);
+}
+
 #particles-canvas {
   position: fixed;
   top: 0;
@@ -602,7 +696,7 @@ a {
   height: 100%;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.6;
+  opacity: 0.85;
 }
 
 /* --------------------------------------------------------------------------
@@ -730,8 +824,8 @@ a {
   position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: #0B1020;
-  border: 1px solid var(--border-light);
+  background: var(--img-surface-bg);
+  border: 1px solid var(--img-surface-border);
   aspect-ratio: 4 / 3;
   display: flex;
   align-items: center;
@@ -1174,33 +1268,51 @@ a {
 
 .gallery-main-view {
   display: grid;
-  grid-template-columns: 1.35fr 1fr;
+  grid-template-columns: 1.15fr 1fr;
   gap: 2.5rem;
   align-items: stretch;
 }
 
 .gallery-img-wrapper {
-  background: #0B1020;
-  border: 1px solid var(--border-light);
+  position: relative;
+  background: var(--img-surface-bg);
+  border: 1px solid var(--img-surface-border);
   border-radius: var(--radius-xl);
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: var(--card-shadow);
-  aspect-ratio: 16 / 11;
+  min-height: 480px;
+  height: 100%;
+  padding: 1.5rem;
+  transition: background var(--transition-smooth), border-color var(--transition-smooth), box-shadow var(--transition-smooth);
+}
+
+.gallery-img-wrapper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% 50%, var(--primary-light) 0%, transparent 70%);
+  opacity: 0.6;
+  pointer-events: none;
 }
 
 .gallery-featured-img {
-  width: 100%;
-  height: 100%;
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  max-height: 520px;
+  width: auto;
+  height: auto;
   object-fit: contain;
-  padding: 1.5rem;
-  transition: transform 0.4s ease;
+  border-radius: var(--radius-lg);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+  filter: drop-shadow(0 12px 28px rgba(0, 0, 0, 0.14));
 }
 
 .gallery-featured-img:hover {
-  transform: scale(1.02);
+  transform: scale(1.025);
 }
 
 .specs-card {
@@ -1418,9 +1530,9 @@ a {
 
 .config-preview-img-box {
   width: 100%;
-  background: #0B1020;
+  background: var(--img-surface-bg);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-light);
+  border: 1px solid var(--img-surface-border);
   overflow: hidden;
   margin-bottom: 1.5rem;
   aspect-ratio: 4 / 3;
